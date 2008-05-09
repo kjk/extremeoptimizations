@@ -4,3 +4,10 @@ This website is about extreme size optimization of C/C++/Objective-C programs.
 
 Table of contest.
 
+What to cover:
+
+* tools of the trade (using nm + python script with gcc, pdbdump + python script on windows)
+* optimizing size of structures (by proper aligning of fields, packing)
+* optimize arrays of structures by breaking them into arrays of smaller items
+* 2 arrays of same size into one array
+* passing structures by value (example from tinypy) - bad
