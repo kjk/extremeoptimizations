@@ -29,9 +29,7 @@ def dofile(srcpath):
 
 def main():
     files = [os.path.join(SRCDIR, f) for f in os.listdir(SRCDIR)]
-    files = [f for f in files if os.path.isfile(f)]
-    for f in files:
-        dofile(f)
+    map(dofile, [f for f in files if os.path.isfile(f)])
 
 if __name__ == "__main__":
     main()
