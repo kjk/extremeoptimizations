@@ -10,7 +10,8 @@ h2. Table of contents
 
 # Why optimize (for size)?
 # "An optimization story":optimization_story.html
-# "Tools of the trade":tools_of_the_trade.html
+# "Measuring size":tools_of_the_trade.html
+# "Asking compiler to optimize for you":asking_compiler.html
 # "Optimizing size of structures":optimize_size_of_structures.html
 # "Optimizing arrays of structures":optimize_arrays_of_structures.html
 # Passing by value vs. passing by reference
