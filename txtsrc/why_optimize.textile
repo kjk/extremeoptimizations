@@ -1,2 +1,4 @@
-h1. Why optimize (for size)?
+Title: Why optimize?
+
+h1. Why optimize?
 

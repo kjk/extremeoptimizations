@@ -1,4 +1,6 @@
-h1. Asking compiler to optimize for you.
+Title: Asking the compiler to optimize for you.
+
+h1. Asking the compiler to optimize for you.
 
 There are only two C/C++ compilers that matter: gcc and Visual Studio. Both have command-line options to optimize for the size of generated code.
 

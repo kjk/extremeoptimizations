@@ -1,3 +1,5 @@
+Title: Tools of the trade
+
 h1. Tools of the trade
 
 Using nm + python script with gcc

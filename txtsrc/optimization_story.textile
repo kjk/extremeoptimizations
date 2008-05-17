@@ -1,4 +1,6 @@
-h1. Optimization story
+Title: An optimization story
+
+h1. An optimization story
 
 Here's an example of optimizing a piece of code, starting from simple, unoptimized code to extremely optimized, yet still simple code.
 
@@ -31,6 +33,7 @@ h2. Optimizing allocations of strings.
 In naive version we make N*2 allocations to store N name/value pairs. Most of those strings are short, so we're probably badly hit by @malloc()@'s allocation rounding. Additionally, @malloc()@ isn't the fastest operation, so doing less of it can only be good.
 
 Let's notice two important properties that will allow us to optimize this:
+
 * total amount of allocated memory needed is exactly the size of the string we're parsing
 * memory for all strings is freed at the same time
 

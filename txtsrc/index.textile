@@ -1,3 +1,5 @@
+Title: Extreme (size) optimization in C, C++ and Objective-C.
+
 h1. Extreme (size) optimization in C, C++ and Objective-C.
 
 by "Krzysztof Kowalczyk":http://blog.kowalczyk.info
@@ -10,8 +12,9 @@ h2. Table of contents
 
 # Why optimize (for size)?
 # "An optimization story":optimization_story.html
-# "Measuring size":tools_of_the_trade.html
-# "Asking compiler to optimize for you":asking_compiler.html
-# "Optimizing size of structures":optimize_size_of_structures.html
-# "Optimizing arrays of structures":optimize_arrays_of_structures.html
+# Things you need to know
+# Measuring size
+# "Asking the compiler to optimize for you":asking_compiler.html
+# Optimizing size of structures
+# Optimizing arrays of structures
 # Passing by value vs. passing by reference

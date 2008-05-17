@@ -1,3 +1,5 @@
+Title: Optimizing size of structures
+
 h1. Optimizing size of structures
 
 Proper aligning of fields, packing.
