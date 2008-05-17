@@ -1,9 +1,9 @@
-#ifndef PARSED_STR_H__
-#define PARSED_STR_H__
+#ifndef IPARSED_STR_H__
+#define IPARSED_STR_H__
 
-class ParsedStr {
+class IParsedStr {
 public:
-    ParsedStr(const char* src);
+    IParsedStr(const char* src);
     size_t count();
     const char* name(size_t idx);
     const char* value(size_t idx);
