@@ -1,0 +1,2 @@
+h1. Why optimize (for size)?
+

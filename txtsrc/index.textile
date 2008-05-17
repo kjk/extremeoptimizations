@@ -1,0 +1,16 @@
+h1. Extreme (size) optimization in C, C++ and Objective-C.
+
+by "Krzysztof Kowalczyk":http://blog.kowalczyk.info
+
+h2. What is this about?
+
+This document presents extreme techniques for optimizing the size of C, C++ and Objective-C programs. It's about optimizing both the size of the final executable and the amount of memory used at runtime.
+
+h2. Table of contents
+
+# Why optimize (for size)?
+# "An optimization story":optimization_story.html
+# "Tools of the trade":tools_of_the_trade.html
+# "Optimizing size of structures":optimize_size_of_structures.html
+# "Optimizing arrays of structures":optimize_arrays_of_structures.html
+# Passing by value vs. passing by reference

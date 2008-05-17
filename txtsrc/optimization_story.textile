@@ -1,0 +1,74 @@
+h1. Optimization story
+
+Here's an example of optimizing a piece of code, starting from simple, unoptimized code to extremely optimized, yet still simple code.
+
+The task is to write a class to parse a string in the form @"name1=val1&name2=val2&name3=val3&..."@ into name/value pairs and provide an easy to use interface for accessing parsed string. 
+
+You might recognize this as the format of HTTP GET request, so this is a real-life task (albeit simplified), not a theoretical invention.
+
+We'll be optimizing the amount of memory used at runtime for storing parsed strings.
+
+Let's start with interface:
+
+@include "ParseString.h" 4-11
+
+h2. Naive STL version
+
+A naive STL version will simply use a vector of strings for storing names and a vector of strings for storing values.
+
+@include "ParseStringStl.h"
+@include "ParseStringStl.cpp"
+
+h2. Naive, unoptimized version
+
+A naive version that doesn't use STL. Instead, it'll use a plain C array of @char *@ instead of vectors, and heap-allocated @char *@ instead of @std::string@.
+
+@include "ParseStringUnopt.h"
+@include "ParseStringUnopt.cpp"
+
+h2. Optimizing allocations of strings.
+
+In naive version we make N*2 allocations to store N name/value pairs. Most of those strings are short, so we're probably badly hit by @malloc()@'s allocation rounding. Additionally, @malloc()@ isn't the fastest operation, so doing less of it can only be good.
+
+Let's notice two important properties that will allow us to optimize this:
+* total amount of allocated memory needed is exactly the size of the string we're parsing
+* memory for all strings is freed at the same time
+
+Our optimized version will simply duplicate the original string, put separating 0s in place of @=@ and @&@ characters and point the array inside that string.
+
+Here's the code:
+
+@include "ParseStringAllocOpt.h"
+@include "ParseStringAllocOpt.cpp"
+
+Not only this version uses less memory, is faster but also the code itself is smaller and generated executable is smaller.
+
+h2. One array instead of two.
+
+Notice that we allocate two arrays of equal length and we do it only once. We can easily change the code to only use one array of twice the size.
+
+We can adopt a simple indexing convention for accessing elements. Element @i@ of @_name@ array will be be at index @i*2@ of the combined array, and element @i@ of @_value@ array will be at index @i*2+1@.
+
+This saves us one @malloc()@, a little bit of memory due to less @malloc()@ rounding and buys us a bit of cache locality (since most likely we'll access)
+
+h2. Offsets instead of pointer.
+
+A pointer takes 4 bytes on 32-bit machine and 8 bytes on (increasingly more common) 64-bit machines.
+
+Let's notice that all pointers point somewhere within a string so it could be represented as an offset from the beginning of the string. If we can guarantee that the string size is limited, which is often the case, we can represent the offset with a smaller number of bytes. For strings 3 bytes (24 bits) would be a safe value for most cases. Let's assume that in our case the string will always be smaller than 64 kB so we'll use 2 bytes for offset.
+
+Here's modified code:
+
+@include "ParseStringOffset.h"
+@include "ParseStringOffset.cpp"
+
+We save 2 bytes per pointer on 32 bit machines and 6 bytes per pointer on 64 bit machines.
+
+h2. Getting rid of offsets altogether.
+
+Do we need the offsets at all? We know that strings are laid out in memory in a specific order and if we're willing to sacrifice a little bit of speed, we don't even have to store the offsets.
+
+h2. Optimizing for common case.
+
+Let's assume that we know that most of the time the string to parse is less than 100 bytes. Can we optimize further for that common case?
+
