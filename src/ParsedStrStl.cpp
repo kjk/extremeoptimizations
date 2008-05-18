@@ -7,28 +7,24 @@ ParsedStr::ParsedStr()
 
 bool ParsedStr::parse(const char *s)
 {
-    bool ok;
-
     char *scopy = strdup(s);
     for(;;) {
         char *name = delim_str_iter(&scopy);
         if (NULL == name) {
              /* finished parsing */
-            ok = true;
-            break;
+            free(scopy);
+            return true;
         }
 
         char *value = delim_str_iter(&scopy);
         if (NULL == value) {
             /* malformed string */
-            ok = false;
-            break;
+            free(scopy);
+            return false;
         }
         _names.push_back(std::string(name));
         _values.push_back(std::string(value));
     }
-    free(scopy);
-    return ok;
 }
 
 size_t ParsedStr::count()

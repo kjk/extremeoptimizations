@@ -7,7 +7,6 @@
 class ParsedStr
 {
 protected:
-    std::string _str;
     std::vector<std::string> _names;
     std::vector<std::string> _values;
 public:
