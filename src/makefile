@@ -45,7 +45,8 @@ O=$(OUTDIR)
 
 all: $(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped \
 	$(O)/parsed_str_unopt_stripped $(O)/parsed_str_opt_alloc_stripped \
-	$(O)/parsed_str_opt_one_array_stripped $(O)/parsed_str_opt_offsets_stripped
+	$(O)/parsed_str_opt_one_array_stripped $(O)/parsed_str_opt_offsets_stripped \
+	$(O)/parsed_str_opt_no_offsets_stripped
 
 rebuild: force
 	make all CFG=small
@@ -90,6 +91,12 @@ $(OUTDIR)/parsed_str_opt_offsets: $(OUTDIR_EXISTS) force
 	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptOffsets.cpp -DVER_OPT_OFFSETS -o $@
 
 $(OUTDIR)/parsed_str_opt_offsets_stripped: $(OUTDIR)/parsed_str_opt_offsets
+	strip -S -o $@ $<
+
+$(OUTDIR)/parsed_str_opt_no_offsets: $(OUTDIR_EXISTS) force
+	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptNoOffsets.cpp -DVER_OPT_NO_OFFSETS -o $@
+
+$(OUTDIR)/parsed_str_opt_no_offsets_stripped: $(OUTDIR)/parsed_str_opt_no_offsets
 	strip -S -o $@ $<
 
 inform:
