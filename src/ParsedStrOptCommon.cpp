@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "ParsedStrOptNoOffsets.h"
+#include "ParsedStrOptCommon.h"
 #include "ParsedStrUtil.h"
 
 ParsedStr::ParsedStr()
@@ -33,7 +33,14 @@ static const char *get_str(const char *str, int i)
 
 int ParsedStr::parse(const char *str)
 {
-    _str = strdup(str);
+    size_t len = strlen(str);
+    if (len > sizeof(_buf)-1)
+        _str = strdup(str);
+    else {
+        memcpy(_buf, str, len + 1);
+        _str = _buf;
+    }
+
     _count = 0;
     char *s = (char*)_str;
     while (NULL != parsed_str_iter(&s)) {
@@ -49,7 +56,8 @@ int ParsedStr::parse(const char *str)
 
 ParsedStr::~ParsedStr()
 {
-    free((void*)_str);
+    if (_str != _buf)
+        free((void*)_str);
 }
 
 size_t ParsedStr::count()

@@ -30,6 +30,10 @@
 #include "ParsedStrOptNoOffsets.h"
 #endif
 
+#ifdef VER_OPT_COMMON
+#include "ParsedStrOptCommon.h"
+#endif
+
 #define STR_TO_PARSE "foo=bar&foo2=burgunty&cookie=hello&foo=bargain"
 
 int tests_failed = 0;
