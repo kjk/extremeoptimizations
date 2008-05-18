@@ -6,15 +6,22 @@ by "Krzysztof Kowalczyk":http://blog.kowalczyk.info
 
 h2. What is this about?
 
+!>http://farm1.static.flickr.com/206/512024537_3da49317eb_m.jpg!:http://www.flickr.com/photos/strict/512024537/
+
 This document presents extreme techniques for optimizing the size of C, C++ and Objective-C programs. It's about optimizing both the size of the final executable and the amount of memory used at runtime.
+
+Sometimes the code will also become faster, although speed is not the main focus.
+
+All examples come from optimizing real-life code.
 
 h2. Table of contents
 
-# Why optimize (for size)?
+# Why optimize?
 # "An optimization story":optimization_story.html
 # Things you need to know
 # Measuring size
-# "Asking the compiler to optimize for you":asking_compiler.html
+# Asking the compiler to optimize for you
 # Optimizing size of structures
 # Optimizing arrays of structures
 # Passing by value vs. passing by reference
+# Smaller code through better architecture

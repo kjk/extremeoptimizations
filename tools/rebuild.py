@@ -3,7 +3,8 @@ import os.path, sys, string
 import textile
 
 CURDIR = os.path.curdir
-SRCDIR = os.path.realpath(os.path.join(CURDIR, "txtsrc"))
+TXTSRCDIR = os.path.realpath(os.path.join(CURDIR, "txtsrc"))
+SRCDIR = os.path.realpath(os.path.join(CURDIR, "src"))
 OUTDIR = os.path.realpath(os.path.join(CURDIR, "www"))
 
 def read(path):
@@ -23,22 +24,30 @@ g_header = None
 def header():
     global g_header
     if g_header is None:
-        g_header = read(os.path.join(SRCDIR, "_header.html"))
+        g_header = read(os.path.join(TXTSRCDIR, "_header.html"))
     return g_header
 
 g_footer = None
 def footer():
     global g_footer
     if g_footer is None:
-        g_footer = read(os.path.join(SRCDIR, "_footer.html"))
+        g_footer = read(os.path.join(TXTSRCDIR, "_footer.html"))
     return g_footer
 
 def dir_exists(path): return os.path.exists(path) and os.path.isdir(path)
+def file_exists(path): return os.path.exists(path) and os.path.isfile(path)
 
 def verify_dir_exists(path):
     if not dir_exists(path):
-        print("dir '%s' doesn't exists" % path)
-        sys.exit(1)
+        txt = "dir '%s' doesn't exists" % path
+        print(txt)
+        raise Exception(txt)
+
+def verify_file_exists(path):
+    if not file_exists(path):
+        txt = "file '%s' doesn't exists" % path
+        print(txt)
+        raise Exception(txt)
 
 def ensure_dir(path):
     if not dir_exists(path):
@@ -53,16 +62,56 @@ def issrcfile(path):
 
 def outfilename(path):
     base = os.path.basename(path)
-    print base
     for suff in VALID_SUFFS:
         if base.endswith(suff):
             base = base.replace(suff, ".html")
             return os.path.join(OUTDIR, base)
     return None
 
+def tmpfilename(path): return path + ".tmp"
+
 def is_comment(line): return line.startswith("#")
 def is_sep(line): return 0 == len(line.strip())
 def is_key(line): return ':' in line
+def is_include(line): return line.startswith("@include")
+
+def readlines(filename, start, end):
+    lines = []
+    line_no = 1
+    for l in open(filename, "rb"):
+        if line_no > end:
+            return string.join(lines, "")
+        if line_no >= start:
+            lines.append(l)
+        line_no += 1
+    return string.join(lines, "")
+
+g_token = "asdflkasdfasdf:\n"
+# A lame way to generate unique string that we can then string.replace()
+# with destination text
+def get_token():
+    global g_token
+    token = g_token
+    g_token = g_token[:-2] + "a:\n"
+    #print("Token: '%s'\n" % token)
+    return token
+
+# Returns a tuple (filename, filecontent)
+def do_include(line):
+    parts = line.split(" ")
+    if 4 != len(parts):
+        txt = "Malformated @include line:\n'%s'" % line
+        print(txt)
+        raise Exception(txt)
+    filename = parts[1]
+    startline = int(parts[2])
+    endline = int(parts[3])
+    filepath = os.path.join(SRCDIR, filename)
+    verify_file_exists(filepath)
+    txt = readlines(filepath, startline, endline)
+    return (filepath, txt)
+
+g_do_tokens = True
 
 # Load a source *.textile file
 # Returns (<txt>, <dict>) tuple, where <dict> is a dictionary of
@@ -72,6 +121,7 @@ def parsesrc(srcpath):
     keys = {}
     lines = []
     state = ST_START
+    tokens = {}
     for l in open(srcpath, "rb"):
         if ST_START == state:
             if is_comment(l): continue
@@ -82,9 +132,46 @@ def parsesrc(srcpath):
                 print("Expected name: value line, got:\n'%s'" % l)
                 raise Exception("Malformed file %s" % srcpath)
         if ST_BODY == state:
-            lines.append(l)
+            if is_include(l):
+                (filepath, txt) = do_include(l)
+                token = get_token()
+                tokens[token] = (filepath, txt)
+                if g_do_tokens:
+                    lines.append(token)
+                else:
+                    txt = "<pre><code>\n" + txt + "</code></pre>\n"
+                    lines.append(txt)
+            else:
+                lines.append(l)
     txt = string.join(lines, "")
-    return (txt, keys)
+    return (txt, tokens, keys)
+
+# TODO: use a routine from textile?
+"""
+def htmlify(txt):
+    toreplace = {"&" : "&amp;",
+            ">" : "&gt;",
+            "<" : "&lt;"}
+    for k in toreplace.keys():
+        txt = txt.replace(k, toreplace[k])
+    return txt
+"""
+
+def htmlify(text):
+    text = text.replace("&","&amp;")
+    text = text.replace("<","&lt;")
+    text = text.replace(">","&gt;")
+    return text
+
+def code_for_filename(filename):
+    ext_to_classname = { 
+        ".cpp" : "cpp",
+        ".h" : "cpp",
+        ".c" : "cpp"}
+    for ext in ext_to_classname.keys():
+        if filename.endswith(ext):
+            return '<code class="' + ext_to_classname[ext] + '">'
+    return "<code>"
 
 def dofile(srcpath):
     if not issrcfile(srcpath):
@@ -94,20 +181,31 @@ def dofile(srcpath):
     if dstpath is None:
         print("Ignoring file '%s'" % srcpath)
         return
-    (txt, keys) = parsesrc(srcpath)
+    tmppath = tmpfilename(srcpath)
+    (txt, tokens, keys) = parsesrc(srcpath)
     title = ""
     if "Title" in keys:
         title = keys["Title"]
     hdr = header()
     hdr = hdr.replace("$title", title)
-    ftr = footer()
+    ftr = footer()        
+    write(tmppath, txt)
     html = textile.textile(txt)
+    if g_do_tokens:
+        #print tokens.keys()
+        for token in tokens.keys():
+            codetxt = tokens[token][1]
+            c = code_for_filename(tokens[token][0])
+            codehtml = "\n<pre>" + c + "\n" + htmlify(codetxt) + "</code></pre>\n"
+            token = token.strip()
+            html = html.replace(token, codehtml)
     write(dstpath, hdr + html + ftr)
 
 def main():
+    verify_dir_exists(TXTSRCDIR)
     verify_dir_exists(SRCDIR)
     ensure_dir(OUTDIR)
-    files = [os.path.join(SRCDIR, f) for f in os.listdir(SRCDIR)]
+    files = [os.path.join(TXTSRCDIR, f) for f in os.listdir(TXTSRCDIR)]
     map(dofile, [f for f in files if os.path.isfile(f)])
 
 if __name__ == "__main__":
