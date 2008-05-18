@@ -31,7 +31,7 @@ static const char *get_str(const char *str, int i)
     return str + idx;
 }
 
-int ParsedStr::parse(const char *str)
+bool ParsedStr::parse(const char *str)
 {
     size_t len = strlen(str);
     if (len > sizeof(_buf)-1)
@@ -48,10 +48,10 @@ int ParsedStr::parse(const char *str)
     }
     /* if count is not even => malformed string */
     if (_count % 2 != 0) {
-        return 0;
+        return false;
     }
     _count = _count / 2;
-    return 1;
+    return true;
 }
 
 ParsedStr::~ParsedStr()

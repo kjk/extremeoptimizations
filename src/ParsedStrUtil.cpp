@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "ParsedStrUtil.h"
 
-static int is_delim(char c)
+static bool is_delim(char c)
 {
     return (('=' == c) || ('&' == c) || (0 == c));
 }

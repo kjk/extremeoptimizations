@@ -12,7 +12,7 @@ ParsedStr::ParsedStr()
 
 enum {CALC_COUNT, BUILD};
 
-int ParsedStr::parse(const char *s)
+bool ParsedStr::parse(const char *s)
 {
     int count;
     for (int phase=CALC_COUNT; phase <= BUILD; phase++) {
@@ -29,7 +29,7 @@ int ParsedStr::parse(const char *s)
             if (NULL == value) {
                 /* malformed string */
                 free(scopy);
-                return 0;
+                return false;
             }
             if (BUILD == phase) {
                 _names[count] = strdup(name);
@@ -45,7 +45,7 @@ int ParsedStr::parse(const char *s)
             }
         }
     }
-    return 1;
+    return true;
 }
 
 ParsedStr::~ParsedStr()

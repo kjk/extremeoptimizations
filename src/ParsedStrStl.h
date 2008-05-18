@@ -12,7 +12,7 @@ protected:
     std::vector<std::string> _values;
 public:
     ParsedStr();
-    int parse(const char *s);
+    bool parse(const char *s);
     size_t count();
     const char* name(size_t idx);
     const char* value(size_t idx);

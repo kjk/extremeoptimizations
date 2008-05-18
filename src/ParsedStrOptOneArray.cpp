@@ -20,7 +20,7 @@ static void skip_one(char **str)
     *str = s + 1;
 }
 
-int ParsedStr::parse(const char *str)
+bool ParsedStr::parse(const char *str)
 {
     _str = strdup(str);
     int count = 0;
@@ -31,7 +31,7 @@ int ParsedStr::parse(const char *str)
     }
     /* if count is not even => malformed string */
     if (count % 2 != 0) {
-        return 0;
+        return false;
     }
 
     _count = count / 2;
@@ -47,7 +47,7 @@ int ParsedStr::parse(const char *str)
     }
 
     assert(idx == _count * 2);
-    return 1;
+    return true;
 }
 
 ParsedStr::~ParsedStr()

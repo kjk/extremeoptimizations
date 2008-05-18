@@ -4,9 +4,9 @@
 ParsedStr::ParsedStr()
 {}
 
-int ParsedStr::parse(const char *s)
+bool ParsedStr::parse(const char *s)
 {
-    return 0;
+    return false;
 }
 
 size_t ParsedStr::count()

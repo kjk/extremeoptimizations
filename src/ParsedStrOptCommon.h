@@ -1,6 +1,7 @@
 #ifndef PARSED_STRING_H__
 #define PARSED_STRING_H__
 
+/* make the size of the buffer miltiply of 8, to match malloc() padding */
 #define PARSED_STR_BUF_SIZE 256 - sizeof(char*) - sizeof(size_t)
 
 class ParsedStr
@@ -12,7 +13,7 @@ protected:
 public:
     ParsedStr();
     ~ParsedStr();
-    int parse(const char *s);
+    bool parse(const char *s);
     size_t count();
     const char* name(size_t idx);
     const char* value(size_t idx);
