@@ -1,7 +1,13 @@
+#include <stdio.h>
 #include "ParsedStrDummy.h"
 
-ParsedStr::ParsedStr(const char *s)
+ParsedStr::ParsedStr()
 {}
+
+int ParsedStr::parse(const char *s)
+{
+    return 0;
+}
 
 size_t ParsedStr::count()
 {

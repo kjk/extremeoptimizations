@@ -1,5 +1,11 @@
 # CFG   = [rel|dbg|small] - dbg if not given
 
+HOST_LINUX := Linux
+HOST_MAC := Darwin
+
+# HOST can be: Linux, Darwin, CYGWIN_NT-6.0, CYGWIN_NT-5.1
+HOST := $(shell uname -s)
+
 $(info )
 $(info Building on $(shell uname -a))
 $(info gcc version: $(shell $(CC) -dumpversion))
@@ -12,6 +18,8 @@ CFG=dbg
 endif
 
 INCS = -I .
+
+CFLAGS += -g
 
 ifeq ($(CFG),rel)
 CFLAGS += -O2
@@ -27,10 +35,15 @@ endif
 
 LDFLAGS += -lstdc++
 
+ifeq ($(HOST),$(HOST_MAC))
+LDFLAGS += -dead_strip
+endif
+
 OUTDIR=obj-$(CFG)
 OUTDIR_EXISTS = $(OUTDIR)/.ensure_exists
+O=$(OUTDIR)
 
-all: $(OUTDIR)/parsed_str_dummy $(OUTDIR)/parsed_str_stl_stripped
+all: $(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped
 
 rebuild: force
 	make all CFG=small
@@ -42,13 +55,13 @@ $(OUTDIR_EXISTS):
 	touch $(OUTDIR_EXISTS)
 
 $(OUTDIR)/parsed_str_dummy: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp ParsedStrStl.cpp -DVER_DUMMY -o $@
+	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp ParsedStrDummy.cpp -DVER_DUMMY -o $@
 
 $(OUTDIR)/parsed_str_dummy_stripped: $(OUTDIR)/parsed_str_dummy
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_stl: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp ParsedStrStl.cpp -DVER_STL -o $@
+	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrStl.cpp -DVER_STL -o $@
 
 $(OUTDIR)/parsed_str_stl_stripped: $(OUTDIR)/parsed_str_stl
 	strip -S -o $@ $<

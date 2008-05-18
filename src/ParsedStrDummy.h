@@ -3,7 +3,8 @@
 
 class ParsedStr {
 public:
-    ParsedStr(const char* src);
+    ParsedStr();
+    int parse(const char* src);
     size_t count();
     const char* name(size_t idx);
     const char* value(size_t idx);
