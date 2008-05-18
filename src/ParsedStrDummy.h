@@ -1,5 +1,5 @@
-#ifndef PARSED_STR_DUMMY_H__
-#define PARSED_STR_DUMMY_H__
+#ifndef PARSED_STR_H__
+#define PARSED_STR_H__
 
 class ParsedStr {
 public:

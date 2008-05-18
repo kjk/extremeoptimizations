@@ -1,5 +1,5 @@
-#ifndef PARSED_STRING_STL_H__
-#define PARSED_STRING_STL_H__
+#ifndef PARSED_STRING_H__
+#define PARSED_STRING_H__
 
 class ParsedStr
 {

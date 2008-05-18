@@ -5,8 +5,8 @@ class ParsedStr
 {
 protected:
     size_t _count;
-    const char **_names;
-    const char **_values;
+    const char *_str;
+    unsigned short *_names_values_offsets;
 public:
     ParsedStr();
     ~ParsedStr();
