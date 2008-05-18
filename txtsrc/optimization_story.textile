@@ -16,16 +16,15 @@ Let's start with interface.
 
 @include ParsedStrDummy.h 4 11
 
-Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.txt) and a "makefile":src/makefile.html ("raw":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version.
+Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.cpp.txt) and a "makefile":src/makefile.html ("raw":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version.
 
 Common utility routines are in "ParsedStrUtil.cpp":src/ParsedStrUtil.cpp.html ("raw":src/ParsedStrUtil.cpp.txt).
 
 h2. Naive STL version
 
-!>http://farm1.static.flickr.com/52/181086335_3390d27992_m.jpg!:http://www.flickr.com/photos/jonhanson/181086335/in/set-72157594186301066/
-
-
 A naive STL version will simply use a vector of strings for storing names and a vector of strings for storing values.
+
+!>http://farm1.static.flickr.com/52/181086335_3390d27992_m.jpg!:http://www.flickr.com/photos/jonhanson/181086335/in/set-72157594186301066/
 
 @include ParsedStrStl.h 7 19
 
@@ -33,20 +32,18 @@ A naive STL version will simply use a vector of strings for storing names and a 
 
 h2. Naive, unoptimized version
 
-!>http://farm1.static.flickr.com/68/181095786_ef9fc49edd_m.jpg!:http://www.flickr.com/photos/jonhanson/181095786/in/set-72157594186301066/
-
 A naive version that doesn't use STL. Instead of strings and vectors it uses heap-allocated plain C @char *@ and @char **@. To avoid reallocating arrays, it does its thing in two steps:
 
 * first, calculate the size of arrays
 * allocate arrays and fill them out
+
+!>http://farm1.static.flickr.com/68/181095786_ef9fc49edd_m.jpg!:http://www.flickr.com/photos/jonhanson/181095786/in/set-72157594186301066/
 
 @include ParsedStrUnopt.h 4 17
 
 @include ParsedStrUnopt.cpp 7 74
 
 h2. Optimizing allocations of strings.
-
-!>http://farm1.static.flickr.com/57/181091710_9bb4dd4bcf_m.jpg!:http://www.flickr.com/photos/jonhanson/181091710/in/set-72157594186301066/
 
 In naive version we make N*2 allocations to store N name/value pairs. Most of those strings are short, so we're probably badly hit by @malloc()@'s allocation rounding. Additionally, @malloc()@ isn't the fastest operation, so doing less of it can only be good.
 
@@ -57,7 +54,7 @@ Let's notice two important properties that will allow us to optimize this:
 
 Our optimized version will simply duplicate the original string, put separating 0s in place of @=@ and @&@ characters and point the array inside that string.
 
-Here's the code:
+!>http://farm1.static.flickr.com/57/181091710_9bb4dd4bcf_m.jpg!:http://www.flickr.com/photos/jonhanson/181091710/in/set-72157594186301066/
 
 @include ParsedStrOptAlloc.h 4 18
 
@@ -67,13 +64,13 @@ Not only this version uses less memory, is faster but also the code itself is sm
 
 h2. One array instead of two.
 
-!>http://farm1.static.flickr.com/62/181087250_c3d0fafd24_m.jpg!:http://www.flickr.com/photos/jonhanson/181087250/in/set-72157594186301066/
-
 Notice that we allocate two arrays of equal length and we do it only once. We can easily change the code to only use one array of twice the size.
 
 We can adopt a simple indexing convention for accessing elements. Element @i@ of @_name@ array will be be at index @i*2@ of the combined array, and element @i@ of @_value@ array will be at index @i*2+1@.
 
 This saves us one @malloc()@, a little bit of memory due to less @malloc()@ rounding and buys us a bit of cache locality (since most likely we'll access)
+
+!>http://farm1.static.flickr.com/62/181087250_c3d0fafd24_m.jpg!:http://www.flickr.com/photos/jonhanson/181087250/in/set-72157594186301066/
 
 @include ParsedStrOptOneArray.h 4 17
 
@@ -81,13 +78,13 @@ This saves us one @malloc()@, a little bit of memory due to less @malloc()@ roun
 
 h2. Offsets instead of pointer.
 
-!>http://farm1.static.flickr.com/63/181087083_fcf7fe632d_m.jpg!:http://www.flickr.com/photos/jonhanson/181087083/in/set-72157594186301066/
-
 A pointer takes 4 bytes on 32-bit machine and 8 bytes on (increasingly more common) 64-bit machines.
 
 Let's notice that all pointers point somewhere within a string so it could be represented as an offset from the beginning of the string. If we can guarantee that the string size is limited, which is often the case, we can represent the offset with a smaller number of bytes. For strings 3 bytes (24 bits) would be a safe value for most cases. Let's assume that in our case the string will always be smaller than 64 kB so we'll use 2 bytes for offset.
 
 Here's modified code:
+
+!>http://farm1.static.flickr.com/63/181087083_fcf7fe632d_m.jpg!:http://www.flickr.com/photos/jonhanson/181087083/in/set-72157594186301066/
 
 @include ParsedStrOptOffsets.h 4 17
 
@@ -97,9 +94,9 @@ We save 2 bytes per pointer on 32 bit machines and 6 bytes per pointer on 64 bit
 
 h2. Getting rid of offsets altogether.
 
-!>http://farm1.static.flickr.com/58/181086162_1f3ed9359b_m.jpg!:http://www.flickr.com/photos/jonhanson/181086162/in/set-72157594186301066/
-
 Do we need the offsets at all? We know that strings are laid out in memory in a specific order and if we're willing to sacrifice a little bit of speed, we don't even have to store the offsets.
+
+!>http://farm1.static.flickr.com/58/181086162_1f3ed9359b_m.jpg!:http://www.flickr.com/photos/jonhanson/181086162/in/set-72157594186301066/
 
 @include ParsedStrOptNoOffsets.h 4 16
 
@@ -108,6 +105,8 @@ Do we need the offsets at all? We know that strings are laid out in memory in a 
 h2. Optimizing for common case.
 
 Let's assume that we know that most of the time the string to parse is less than 100 bytes. Can we optimize further for that common case?
+
+!>http://farm1.static.flickr.com/65/181091396_26f1dc4d00_m.jpg!:http://www.flickr.com/photos/jonhanson/181091396/in/set-72157594186301066/
 
 @include ParsedStrOptCommon.h 4 20
 

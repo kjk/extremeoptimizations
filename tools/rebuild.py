@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-import os.path, sys, string
+import os.path, sys, string, shutil
 import textile
 
 CURDIR = os.path.curdir
 TXTSRCDIR = os.path.realpath(os.path.join(CURDIR, "txtsrc"))
 SRCDIR = os.path.realpath(os.path.join(CURDIR, "src"))
 OUTDIR = os.path.realpath(os.path.join(CURDIR, "www"))
+OUTSRCDIR = os.path.realpath(os.path.join(CURDIR, "www", "src"))
 
 def read(path):
     fo = open(path, "rb")
@@ -34,9 +35,23 @@ def footer():
         g_footer = read(os.path.join(TXTSRCDIR, "_footer.html"))
     return g_footer
 
+g_header_src = None
+def headersrc():
+    global g_header_src
+    if g_header_src is None:
+        g_header_src = read(os.path.join(TXTSRCDIR, "_header_src.html"))
+    return g_header_src
+
+g_footer_src = None
+def footersrc():
+    global g_footer_src
+    if g_footer_src is None:
+        g_footer_src = read(os.path.join(TXTSRCDIR, "_footer_src.html"))
+    return g_footer_src
+
 def dir_exists(path): return os.path.exists(path) and os.path.isdir(path)
 def file_exists(path): return os.path.exists(path) and os.path.isfile(path)
-
+def copy_file(src,dst): shutil.copy(src, dst)
 def verify_dir_exists(path):
     if not dir_exists(path):
         txt = "dir '%s' doesn't exists" % path
@@ -201,12 +216,34 @@ def dofile(srcpath):
             html = html.replace(token, codehtml)
     write(dstpath, hdr + html + ftr)
 
+def issourcecodefile(path):
+    for ext in [".cpp", "h", "makefile"]:
+        if path.endswith(ext): return True
+    return False
+
+def dosrcfile(srcpath):
+    if not issourcecodefile(srcpath):
+        print("Skipping '%s'" % srcpath)
+        return
+    base = os.path.basename(srcpath)
+    txtpath = os.path.join(OUTSRCDIR, base) + ".txt"
+    htmlpath = os.path.join(OUTSRCDIR, base) + ".html"
+    copy_file(srcpath, txtpath)
+    hdr = headersrc()
+    hdr = hdr.replace("$title", base)
+    html = hdr + "<pre>" + code_for_filename(srcpath) + "\n" + htmlify(read(srcpath)) + "\n</code></pre>\n"
+    html = html + footersrc()
+    write(htmlpath, html)
+
 def main():
     verify_dir_exists(TXTSRCDIR)
     verify_dir_exists(SRCDIR)
     ensure_dir(OUTDIR)
+    ensure_dir(OUTSRCDIR)
     files = [os.path.join(TXTSRCDIR, f) for f in os.listdir(TXTSRCDIR)]
     map(dofile, [f for f in files if os.path.isfile(f)])
+    files = [os.path.join(SRCDIR, f) for f in os.listdir(SRCDIR)]
+    map(dosrcfile, [f for f in files if os.path.isfile(f)])
 
 if __name__ == "__main__":
     main()
