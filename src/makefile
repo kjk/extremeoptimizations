@@ -44,7 +44,8 @@ OUTDIR_EXISTS = $(OUTDIR)/.ensure_exists
 O=$(OUTDIR)
 
 all: $(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped \
-	$(O)/parsed_str_unopt_stripped $(O)/parsed_str_opt_alloc_stripped
+	$(O)/parsed_str_unopt_stripped $(O)/parsed_str_opt_alloc_stripped \
+	$(O)/parsed_str_opt_one_array
 
 rebuild: force
 	make all CFG=small
@@ -77,6 +78,12 @@ $(OUTDIR)/parsed_str_opt_alloc: $(OUTDIR_EXISTS) force
 	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptAlloc.cpp -DVER_OPT_ALLOC -o $@
 
 $(OUTDIR)/parsed_str_opt_alloc_stripped: $(OUTDIR)/parsed_str_opt_alloc
+	strip -S -o $@ $<
+
+$(OUTDIR)/parsed_str_opt_one_array: $(OUTDIR_EXISTS) force
+	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptOneArray.cpp -DVER_OPT_ONE_ARRAY -o $@
+
+$(OUTDIR)/parsed_str_opt_one_array_stripped: $(OUTDIR)/parsed_str_opt_one_array
 	strip -S -o $@ $<
 
 inform:
