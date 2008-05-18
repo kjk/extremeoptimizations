@@ -40,7 +40,14 @@ void test_passed()
     else \
         test_failed();
 
-#define streq(s1, s2) (0 == strcmp(s1, s2))
+int streq(const char *s1, const char* s2)
+{
+    if ((NULL == s1) && (NULL == s2))
+        return 1;
+    if ((NULL == s1) || (NULL == s2))
+        return 0;
+    return 0 == strcmp(s1, s2);
+}
 
 int main(int argc, char **argv)
 {
