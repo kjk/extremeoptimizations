@@ -19,13 +19,13 @@ bool ParsedStr::parse(const char *s)
         char *scopy = strdup(s);
         count = 0;
         for(;;) {
-            char *name = parsed_str_iter(&scopy);
+            char *name = delim_str_iter(&scopy);
             if (NULL == name) {
                 /* finished parsing */
                 free(scopy);
                 break;
             }
-            char *value = parsed_str_iter(&scopy);
+            char *value = delim_str_iter(&scopy);
             if (NULL == value) {
                 /* malformed string */
                 free(scopy);

@@ -11,32 +11,12 @@ ParsedStr::ParsedStr()
     _str = NULL;
 }
 
-static void skip_one(char **str)
-{
-    char *s = *str;
-    while (0 != *s)
-        ++s;
-    *str = s + 1;
-}
-
-static const char *get_str(const char *str, int i)
-{
-    char *start = (char*)str;
-    char *s = (char*) str;
-    while (i > 0) {
-        skip_one(&s);
-        --i;
-    }
-    int idx = (s - start);
-    return str + idx;
-}
-
 bool ParsedStr::parse(const char *str)
 {
     _str = strdup(str);
     _count = 0;
     char *s = (char*)_str;
-    while (NULL != parsed_str_iter(&s)) {
+    while (NULL != delim_str_iter(&s)) {
         ++_count;
     }
     /* if count is not even => malformed string */

@@ -12,21 +12,13 @@ ParsedStr::ParsedStr()
     _names_values_offsets = NULL;
 }
 
-static void skip_one(char **str)
-{
-    char *s = *str;
-    while (0 != *s)
-        ++s;
-    *str = s + 1;
-}
-
 bool ParsedStr::parse(const char *str)
 {
     _str = strdup(str);
     int count = 0;
     /* first, let's calculate the count of strings */
     char *s = (char*)_str;
-    while (NULL != parsed_str_iter(&s)) {
+    while (NULL != delim_str_iter(&s)) {
         ++count;
     }
     /* if count is not even => malformed string */
@@ -41,9 +33,9 @@ bool ParsedStr::parse(const char *str)
     int idx = 0;
     while (*s) {
         _names_values_offsets[idx++] = s - _str;
-        skip_one(&s);
+        str_skip(&s);
         _names_values_offsets[idx++] = s - _str;
-        skip_one(&s);
+        str_skip(&s);
     }
 
     assert(idx == _count * 2);

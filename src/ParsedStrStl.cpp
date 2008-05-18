@@ -11,14 +11,14 @@ bool ParsedStr::parse(const char *s)
 
     char *scopy = strdup(s);
     for(;;) {
-        char *name = parsed_str_iter(&scopy);
+        char *name = delim_str_iter(&scopy);
         if (NULL == name) {
              /* finished parsing */
             ok = true;
             break;
         }
 
-        char *value = parsed_str_iter(&scopy);
+        char *value = delim_str_iter(&scopy);
         if (NULL == value) {
             /* malformed string */
             ok = false;
