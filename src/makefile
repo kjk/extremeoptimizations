@@ -43,7 +43,8 @@ OUTDIR=obj-$(CFG)
 OUTDIR_EXISTS = $(OUTDIR)/.ensure_exists
 O=$(OUTDIR)
 
-all: $(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped
+all: $(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped \
+	$(O)/parsed_str_unopt_stripped
 
 rebuild: force
 	make all CFG=small
@@ -64,6 +65,12 @@ $(OUTDIR)/parsed_str_stl: $(OUTDIR_EXISTS) force
 	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrStl.cpp -DVER_STL -o $@
 
 $(OUTDIR)/parsed_str_stl_stripped: $(OUTDIR)/parsed_str_stl
+	strip -S -o $@ $<
+
+$(OUTDIR)/parsed_str_unopt: $(OUTDIR_EXISTS) force
+	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrUnopt.cpp -DVER_UNOPT -o $@
+
+$(OUTDIR)/parsed_str_unopt_stripped: $(OUTDIR)/parsed_str_unopt
 	strip -S -o $@ $<
 
 inform:
