@@ -14,8 +14,20 @@
 #include "ParsedStrUnopt.h"
 #endif
 
-#ifdef VER_ALLOC_OPT
-#include "ParsedStrAllocOpt.h"
+#ifdef VER_OPT_ALLOC
+#include "ParsedStrOptAlloc.h"
+#endif
+
+#ifdef VER_OPT_ONE_ARRAY
+#include "ParsedStrOptOneArray.h"
+#endif
+
+#ifdef VER_OPT_OFFSETS
+#include "ParsedStrOptOffsets.h"
+#endif
+
+#ifdef VER_OPT_NO_OFFSETS
+#include "ParsedStrOptNoOffsets.h"
 #endif
 
 #define STR_TO_PARSE "foo=bar&foo2=burgunty&cookie=hello&foo=bargain"
@@ -23,8 +35,9 @@
 int tests_failed = 0;
 int tests_total = 0;
 
-void test_failed() 
+void test_failed(const char *expr) 
 {
+    printf("Expression '%s' failed\n", expr);
     ++tests_failed;
     ++tests_total;
 }
@@ -38,7 +51,7 @@ void test_passed()
     if (expr) \
         test_passed(); \
     else \
-        test_failed();
+        test_failed(#expr);
 
 int streq(const char *s1, const char* s2)
 {
@@ -52,6 +65,7 @@ int streq(const char *s1, const char* s2)
 int main(int argc, char **argv)
 {
     printf("Testing ParsedStr implementation.\n");
+    printf("sizeof(ParsedStr)=%d\n", sizeof(ParsedStr));
     ParsedStr p;
     verify(p.parse(STR_TO_PARSE));
     verify(4 == p.count());
