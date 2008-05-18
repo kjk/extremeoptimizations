@@ -150,6 +150,6 @@ STL code is arguably the cleanest but you pay a huge price in overhead and infle
 
 Optimization techniques are all based on understanding what's happening under the hood and exploiting particular properties of the data. STL is bad because it hides how it works internally, which hinders our ability to understand what's going on and come up with an optimization.
 
-Some of the above techniques can't be expressed in STL and some of them can but you'll no longer get the advantage of small, simple code, which eliminates pretty much the only thing STL has going for itself.
+Some of the above techniques can't be expressed in STL. Some of them would cause the code to loose its simplicity, which is the only thing STL version has going for it.
 
 Important thing to notice is that sometimes optimizing for space also makes the code simpler and faster so you win at multiple fronts.
