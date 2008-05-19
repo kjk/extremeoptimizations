@@ -48,11 +48,6 @@ ParsedStr::~ParsedStr()
     free(_names_values_offsets);
 }
 
-size_t ParsedStr::count()
-{
-    return _count;
-}
-
 const char* ParsedStr::name(size_t idx)
 {
     return _str + _names_values_offsets[idx*2];
@@ -62,3 +57,9 @@ const char* ParsedStr::value(size_t idx)
 {
     return _str + _names_values_offsets[idx*2+1];
 }
+
+size_t ParsedStr::count()
+{
+    return _count;
+}
+

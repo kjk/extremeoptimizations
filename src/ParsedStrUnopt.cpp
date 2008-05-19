@@ -15,7 +15,7 @@ enum {CALC_COUNT, BUILD};
 bool ParsedStr::parse(const char *s)
 {
     int count;
-    for (int phase=CALC_COUNT; phase <= BUILD; phase++) {
+    for (int phase = CALC_COUNT; phase <= BUILD; phase++) {
         char *scopy = strdup(s);
         count = 0;
         for(;;) {
