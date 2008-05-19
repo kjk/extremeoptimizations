@@ -42,7 +42,7 @@ def cd(dir):
     os.chdir(dir)
 
 # maps name of executable to user-readable name
-FILES_TO_REPORT = ["parsed_str_dummy_stripped", "no-op", "parsed_str_opt_no_offsets_stripped", "no offsets", "parsed_str_stl_stripped", "naive stl", "parsed_str_opt_alloc_stripped", "optimized allocation",   "parsed_str_opt_offsets_stripped", "offsets", "parsed_str_unopt_stripped", "naive non-stl", "parsed_str_opt_common_stripped", "common case", "parsed_str_opt_one_array_stripped", "one array"]
+FILES_TO_REPORT = ["parsed_str_dummy_stripped", "A no-op version", "parsed_str_opt_no_offsets_stripped", "Getting rid of offsets", "parsed_str_stl_stripped", "Naive STL version", "parsed_str_opt_alloc_stripped", "Optimizing allocations of strings",   "parsed_str_opt_offsets_stripped", "Offsets instead of pointers", "parsed_str_unopt_stripped", "Naive non-STL version", "parsed_str_opt_common_stripped", "Optimizing for common case", "parsed_str_opt_one_array_stripped", "One array instead of two", "parsed_str_opt_no_offsets_no_dup_stripped", "Avoiding copying the string"]
 
 class FileInfo(object):
     def __init__(self, name, readablename, size):
