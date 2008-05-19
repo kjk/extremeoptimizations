@@ -1,7 +1,7 @@
 #ifndef PARSED_STRING_H__
 #define PARSED_STRING_H__
 
-/* make the size of the buffer miltiply of 8, to match malloc() padding */
+/* make the size of the buffer a multiple of 8, to match malloc() padding */
 #define PARSED_STR_BUF_SIZE 256 - sizeof(char*) - sizeof(size_t)
 
 class ParsedStr

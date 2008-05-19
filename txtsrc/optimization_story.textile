@@ -51,7 +51,7 @@ It's both simpler and faster.
 
 h2. Optimizing allocations of strings.
 
-In naive version we make N*2 allocations to store N name/value pairs. Most of those strings are short, so we're probably badly hit by @malloc()@'s overhead. Furthermore, @malloc()@ is relatively slow, so doing less of it can only be good.
+In the naive version we make N*2 allocations to store N name/value pairs. Most of those strings are short, so we're probably badly hit by @malloc()@'s overhead. Furthermore, @malloc()@ is relatively slow, so doing less of it can only be good.
 
 Let's notice two important properties that allows us to optimize this:
 
