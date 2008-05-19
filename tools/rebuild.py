@@ -204,7 +204,7 @@ def dofile(srcpath):
     hdr = header()
     hdr = hdr.replace("$title", title)
     ftr = footer()        
-    write(tmppath, txt)
+    #write(tmppath, txt)
     html = textile.textile(txt)
     if g_do_tokens:
         #print tokens.keys()
