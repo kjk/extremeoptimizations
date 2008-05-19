@@ -75,7 +75,8 @@ int main(int argc, char **argv)
     printf("Testing ParsedStr implementation.\n");
     printf("sizeof(ParsedStr)=%d\n", sizeof(ParsedStr));
     ParsedStr p;
-    verify(p.parse(STR_TO_PARSE));
+    char *s = strdup(STR_TO_PARSE);
+    verify(p.parse(s));
     verify(4 == p.count());
     verify(streq("foo", p.name(0)));
     verify(streq("bar", p.value(0)));
@@ -89,5 +90,6 @@ int main(int argc, char **argv)
         printf("%d out of %d tests failed\n", tests_failed, tests_total);
     else
         printf("All %d tests passed!\n", tests_total);
+    free(s);
     return 0;
 }

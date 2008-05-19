@@ -4,12 +4,9 @@
 # of ParsedStr class in a format suitable for including with
 # optimization_story.textile
 #
-# TODO: also capture sizeof(ParsedStr) for each version (by runing each command
-# and parsing its stdout)
-#
 # TODO: also include version of the compiler used
 
-import sys, os.path, subprocess, string
+import sys, os.path, subprocess, string, re
 
 SCRIPTDIR = os.path.realpath(sys.argv[0])
 SCRIPTDIR = os.path.dirname(SCRIPTDIR)
@@ -50,11 +47,13 @@ class FileInfo(object):
         self.readablename = readablename
         self.size = size
         self.size_vs_smallest = 0
+        self.sizeof = 0
 
     def dump(self):
         print("name:     %s" % self.name)
         print("readable: %s" % self.readablename)
         print("size:     %d vs smallest: %d" % (self.size, self.size_vs_smallest))
+        print("sizeof:   %d" % self.sizeof)
 
 def write(path, data):
     fo = open(path, "wb")
@@ -69,17 +68,28 @@ def html_from_filesinfo(filesinfo):
     lines.append("<th>Version</th>")
     lines.append("<th>File size</th>")
     lines.append("<th>File size delta</th>")
+    lines.append("<th>sizeof(ParsedStr)</th>")
     lines.append("</tr>")
     for fi in filesinfo:
         lines.append("<tr>")
         lines.append("<td>%s</td>" % fi.readablename)
         lines.append("<td>%d</td>" % fi.size)
         lines.append("<td>%d</td>" % fi.size_vs_smallest)
+        lines.append("<td>%d</td>" % fi.sizeof)
         lines.append("</tr>")
     lines.append("</table>")
     lines.append("</center>")
     lines.append("")
     return string.join(lines, "\n")
+
+def get_parsed_str_sizeof(exe):
+    (stdout, stderr) = run_cmd_throw(exe)
+    reg = "sizeof\(ParsedStr\)=(\d+)"
+    regcomp = re.compile(reg, re.MULTILINE)
+    m = regcomp.search(stdout)
+    sizeoftxt = m.group(1)
+    #print sizeoftxt
+    return int(sizeoftxt)
 
 def main():
     cd(SRCDIR)
@@ -93,6 +103,7 @@ def main():
         filesize = os.path.getsize(filepath)
         readablename = FILES_TO_REPORT[FILES_TO_REPORT.index(filename) + 1]
         fi = FileInfo(filename, readablename, filesize)
+        fi.sizeof = get_parsed_str_sizeof(filepath)
         filesinfo.append(fi)
     filesinfo.sort(lambda x,y: cmp(x.size, y.size))
     smallest_size = filesinfo[0].size
