@@ -122,6 +122,12 @@ If there are just few strings and @name()@ and @value()@ are called only a coupl
 
 How do you know which case applies in your code? Use a profiler, "Valgrind":http://valgrind.org is your friend.
 
+h2. Taking ownership of the string.
+
+This optimization comes without the source because it changes the contract between the caller and ParsedStr class.
+
+We can avoid making a copy of the passed string if we can take ownership of the string. This requires coordinations between ParsedStr and its callers (the caller allocates the string but ParsedStr frees it).
+
 h2. Optimizing for common case.
 
 What if most of the time the strings are short, say less than 200 bytes in size? If the string to parse is part of HTTP GET request, this is a safe assumption.
