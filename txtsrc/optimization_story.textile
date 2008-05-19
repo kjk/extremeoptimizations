@@ -14,7 +14,7 @@ We'll be optimizing the amount of memory used at runtime for storing parsed stri
 
 Here's the interface:
 
-@include ParsedStrDummy.h 4 11
+@includesrc ParsedStrDummy.h 4 11
 
 Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.cpp.txt) and a "makefile":src/makefile.html ("raw":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version.
 
@@ -26,9 +26,9 @@ A naive STL version will simply use a vector of strings for storing names and a 
 
 !>http://farm1.static.flickr.com/52/181086335_3390d27992_m.jpg!:http://www.flickr.com/photos/jonhanson/181086335/in/set-72157594186301066/
 
-@include ParsedStrStl.h 7 18
+@includesrc ParsedStrStl.h 7 18
 
-@include ParsedStrStl.cpp 8 43
+@includesrc ParsedStrStl.cpp 8 43
 
 How much memory are we using to store N strings? We really don't know. Not only it depends on a particular STL implementation but whatever that value is, STL does a good job at hiding it from us. You can find out if you're determined enough, but easy it ain't.
 
@@ -45,9 +45,9 @@ It's both simpler and faster.
 
 !>http://farm1.static.flickr.com/68/181095786_ef9fc49edd_m.jpg!:http://www.flickr.com/photos/jonhanson/181095786/in/set-72157594186301066/
 
-@include ParsedStrUnopt.h 4 17
+@includesrc ParsedStrUnopt.h 4 17
 
-@include ParsedStrUnopt.cpp 7 74
+@includesrc ParsedStrUnopt.cpp 7 74
 
 h2. Optimizing allocations of strings
 
@@ -64,9 +64,9 @@ When we're done we only need to free the string copy.
 
 !>http://farm1.static.flickr.com/57/181091710_9bb4dd4bcf_m.jpg!:http://www.flickr.com/photos/jonhanson/181091710/in/set-72157594186301066/
 
-@include ParsedStrOptAlloc.h 4 18
+@includesrc ParsedStrOptAlloc.h 4 18
 
-@include ParsedStrOptAlloc.cpp 8 67
+@includesrc ParsedStrOptAlloc.cpp 8 67
 
 Not only this version uses less memory, is faster but also the code is simpler and smaller.
 
@@ -80,9 +80,9 @@ This saves one @malloc()@ and a little bit of memory due to less @malloc()@ over
 
 !>http://farm1.static.flickr.com/62/181087250_c3d0fafd24_m.jpg!:http://www.flickr.com/photos/jonhanson/181087250/in/set-72157594186301066/
 
-@include ParsedStrOptOneArray.h 4 17
+@includesrc ParsedStrOptOneArray.h 4 17
 
-@include ParsedStrOptOneArray.cpp 8 64
+@includesrc ParsedStrOptOneArray.cpp 8 64
 
 This technique can also be applied in languages like C#, Java and with STL vectors.
 
@@ -96,9 +96,9 @@ If we can guarantee that the string size is limited, which is often the case, we
 
 !>http://farm1.static.flickr.com/63/181087083_fcf7fe632d_m.jpg!:http://www.flickr.com/photos/jonhanson/181087083/in/set-72157594186301066/
 
-@include ParsedStrOptOffsets.h 4 17
+@includesrc ParsedStrOptOffsets.h 4 17
 
-@include ParsedStrOptOffsets.cpp 8 64
+@includesrc ParsedStrOptOffsets.cpp 8 64
 
 We save 2 bytes per pointer on 32 bit machines and 6 bytes per pointer on 64 bit machines.
 
@@ -108,9 +108,9 @@ Do we need the offsets at all? We know that strings are laid out in memory in a 
 
 !>http://farm1.static.flickr.com/58/181086162_1f3ed9359b_m.jpg!:http://www.flickr.com/photos/jonhanson/181086162/in/set-72157594186301066/
 
-@include ParsedStrOptNoOffsets.h 4 16
+@includesrc ParsedStrOptNoOffsets.h 4 16
 
-@include ParsedStrOptNoOffsets.cpp 8 48
+@includesrc ParsedStrOptNoOffsets.cpp 8 48
 
 The code is not only optimized for size but also simpler than most versions.
 
@@ -130,7 +130,7 @@ If that's true, we can avoid allocating a copy of the string and freeing it.
 
 This optimization can be combined with most other optimization. Here's the code after applying it previous version:
 
-@include ParsedStrOptNoOffsetsNoDup.cpp 14 32
+@includesrc ParsedStrOptNoOffsetsNoDup.cpp 14 32
 
 This approach is more error prone because clients have to ensure proper lifetime of the string, but hey, this is about extreme optimizations, not safe ones.
 
@@ -146,9 +146,9 @@ How do we know if it's worth it and how do we know what buffer size should we pi
 
 !>http://farm1.static.flickr.com/65/181091396_26f1dc4d00_m.jpg!:http://www.flickr.com/photos/jonhanson/181091396/in/set-72157594186301066/
 
-@include ParsedStrOptCommon.h 4 20
+@includesrc ParsedStrOptCommon.h 4 20
 
-@include ParsedStrOptCommon.cpp 8 56
+@includesrc ParsedStrOptCommon.cpp 8 56
 
 This trick can be used in combination with other optimizations.
 
@@ -156,7 +156,7 @@ h2. Comparing different approaches.
 
 Here are the file sizes of various versions, compiled with gcc 4.1.3 on Ubuntu and stripped of symbols, to get the most accurate picture of the size of the code:
 
-@includehtml parsedstr-size-stats.html
+@includetxt parsedstr-size-stats.html
 
 The interesting metric is file size delta, which shows how much bigger a given implementation of @ParsedStr@ class is compared to a version that does nothing.
 

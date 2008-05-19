@@ -88,8 +88,8 @@ def tmpfilename(path): return path + ".tmp"
 def is_comment(line): return line.startswith("#")
 def is_sep(line): return 0 == len(line.strip())
 def is_key(line): return ':' in line
-def is_include(line): return line.startswith("@include ")
-def is_includehtml(line): return line.startswith("@includehtml ")
+def is_includesrc(line): return line.startswith("@includesrc ")
+def is_includetxt(line): return line.startswith("@includetxt ")
 
 def readlines(filename, start, end):
     lines = []
@@ -113,10 +113,10 @@ def get_token():
     return token
 
 # Returns a tuple (filename, filecontent)
-def do_include(line):
+def do_includesrc(line):
     parts = line.split(" ")
     if 4 != len(parts):
-        txt = "Malformated @include line:\n'%s'" % line
+        txt = "Malformated @includesrc line:\n'%s'" % line
         print(txt)
         raise Exception(txt)
     filename = parts[1]
@@ -127,10 +127,10 @@ def do_include(line):
     txt = readlines(filepath, startline, endline)
     return (filepath, txt)
 
-def do_includehtml(line, lines):
+def do_includetxt(line, lines):
     parts = line.split(" ")
     if 2 != len(parts):
-        txt = "Malformated @includehtml line:\n'%s'" % line
+        txt = "Malformated @includetxt line:\n'%s'" % line
         print(txt)
         raise Exception(txt)
     filename = parts[1].strip()
@@ -159,8 +159,8 @@ def parsesrc(srcpath):
                 print("Expected name: value line, got:\n'%s'" % l)
                 raise Exception("Malformed file %s" % srcpath)
         if ST_BODY == state:
-            if is_include(l):
-                (filepath, txt) = do_include(l)
+            if is_includesrc(l):
+                (filepath, txt) = do_includesrc(l)
                 token = get_token()
                 tokens[token] = (filepath, txt)
                 if g_do_tokens:
@@ -168,8 +168,8 @@ def parsesrc(srcpath):
                 else:
                     txt = "<pre><code>\n" + txt + "</code></pre>\n"
                     lines.append(txt)
-            elif is_includehtml(l):
-                do_includehtml(l, lines)
+            elif is_includetxt(l):
+                do_includetxt(l, lines)
             else:
                 lines.append(l)
     txt = string.join(lines, "")
