@@ -114,7 +114,7 @@ def main():
     smallest_size = filesinfo[0].size
     for fi in filesinfo:
         fi.size_vs_smallest = fi.size - smallest_size
-    #map(FileInfo.dump, filesinfo)
+    map(FileInfo.dump, filesinfo)
     html = html_from_filesinfo(filesinfo)
     #print html
     write(OUTFILEPATH, html)

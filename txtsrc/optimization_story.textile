@@ -47,7 +47,7 @@ It's both simpler and faster.
 
 @includesrc ParsedStrUnopt.h 4 9
 
-@includesrc ParsedStrUnopt.cpp 13 74
+@includesrc ParsedStrUnopt.cpp 13 50
 
 h2. Optimizing allocations of strings
 
@@ -66,7 +66,7 @@ When we're done we only need to free the string copy.
 
 @includesrc ParsedStrOptAlloc.h 4 10
 
-@includesrc ParsedStrOptAlloc.cpp 15 52
+@includesrc ParsedStrOptAlloc.cpp 15 51
 
 Not only this version uses less memory, is faster but also the code is simpler and smaller.
 
@@ -82,7 +82,7 @@ This saves one @malloc()@ and a little bit of memory due to less @malloc()@ over
 
 @includesrc ParsedStrOptOneArray.h 4 9
 
-@includesrc ParsedStrOptOneArray.cpp 15 59
+@includesrc ParsedStrOptOneArray.cpp 15 55
 
 This technique can also be applied in languages like C#, Java and with STL vectors.
 
@@ -98,7 +98,7 @@ If we can guarantee that the string size is limited, which is often the case, we
 
 @includesrc ParsedStrOptOffsets.h 4 9
 
-@includesrc ParsedStrOptOffsets.cpp 15 59
+@includesrc ParsedStrOptOffsets.cpp 15 55
 
 We save 2 bytes per pointer on 32 bit machines and 6 bytes per pointer on 64 bit machines.
 

@@ -15,20 +15,17 @@ ParsedStr::ParsedStr()
 bool ParsedStr::parse(const char *str)
 {
     _str = strdup(str);
-    int count = 0;
-    /* first, let's calculate the count of strings */
+    int str_count = 0;
     char *s = (char*)_str;
     while (NULL != delim_str_iter(&s)) {
-        ++count;
+        ++str_count;
     }
-    /* if count is not even => malformed string */
-    if (count % 2 != 0) {
+    if (str_count % 2 != 0) {
+        /* malformed string */
         return false;
     }
-
-    _count = count / 2;
+    _count = str_count / 2;
     _names_values_offsets = (unsigned short *)malloc(_count * 2 * sizeof(_names_values_offsets[0]));
-    
     s = (char*)_str;
     int idx = 0;
     while (*s) {
@@ -37,7 +34,6 @@ bool ParsedStr::parse(const char *str)
         _names_values_offsets[idx++] = s - _str;
         str_skip(&s);
     }
-
     assert(idx == _count * 2);
     return true;
 }

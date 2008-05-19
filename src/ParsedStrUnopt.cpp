@@ -10,41 +10,32 @@ ParsedStr::ParsedStr()
     _names = _values = NULL;
 }
 
-enum {CALC_COUNT, BUILD};
-
 bool ParsedStr::parse(const char *s)
 {
-    int count;
-    for (int phase = CALC_COUNT; phase <= BUILD; phase++) {
-        char *scopy = strdup(s);
-        count = 0;
-        for(;;) {
-            char *name = delim_str_iter(&scopy);
-            if (NULL == name) {
-                /* finished parsing */
-                free(scopy);
-                break;
-            }
-            char *value = delim_str_iter(&scopy);
-            if (NULL == value) {
-                /* malformed string */
-                free(scopy);
-                return false;
-            }
-            if (BUILD == phase) {
-                _names[count] = strdup(name);
-                _values[count] = strdup(value);                
-            }
-            ++count;
-        }
-        if (CALC_COUNT == phase) {
-            _count = count;
-            if (count > 0) {
-                _names = (const char**)malloc(count * sizeof(_names[0]));
-                _values = (const char**)malloc(count * sizeof(_values[0]));
-            }
-        }
+    char *scopy = strdup(s);
+    int str_count = 0;
+    char *stmp = scopy;
+    while (NULL != delim_str_iter(&stmp)) {
+        ++str_count;
     }
+    if (str_count % 2 != 0) {
+        /* malformed string */
+        free(scopy);
+        return false;
+    }
+
+    _count = str_count / 2;
+    _names = (const char**)malloc(_count * sizeof(_names[0]));
+    _values = (const char**)malloc(_count * sizeof(_values[0]));
+
+    stmp = scopy;
+    for (int i=0; i<_count; i++) {
+        _names[i] = strdup(stmp);
+        str_skip(&stmp);
+        _values[i] = strdup(stmp);
+        str_skip(&stmp);
+    }
+    free(scopy);
     return true;
 }
 

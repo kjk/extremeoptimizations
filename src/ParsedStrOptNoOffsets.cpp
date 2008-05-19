@@ -19,8 +19,8 @@ bool ParsedStr::parse(const char *str)
     while (NULL != delim_str_iter(&s)) {
         ++_count;
     }
-    /* if count is not even => malformed string */
     if (_count % 2 != 0) {
+        /* malformed string */
         return false;
     }
     _count = _count / 2;
