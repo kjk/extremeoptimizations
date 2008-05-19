@@ -88,7 +88,8 @@ def tmpfilename(path): return path + ".tmp"
 def is_comment(line): return line.startswith("#")
 def is_sep(line): return 0 == len(line.strip())
 def is_key(line): return ':' in line
-def is_include(line): return line.startswith("@include")
+def is_include(line): return line.startswith("@include ")
+def is_includehtml(line): return line.startswith("@includehtml ")
 
 def readlines(filename, start, end):
     lines = []
@@ -126,6 +127,17 @@ def do_include(line):
     txt = readlines(filepath, startline, endline)
     return (filepath, txt)
 
+def do_includehtml(line, lines):
+    parts = line.split(" ")
+    if 2 != len(parts):
+        txt = "Malformated @includehtml line:\n'%s'" % line
+        print(txt)
+        raise Exception(txt)
+    filename = parts[1].strip()
+    filepath = os.path.join(TXTSRCDIR, filename)
+    txt = read(filepath)
+    lines.append(txt)
+
 g_do_tokens = True
 
 # Load a source *.textile file
@@ -156,21 +168,12 @@ def parsesrc(srcpath):
                 else:
                     txt = "<pre><code>\n" + txt + "</code></pre>\n"
                     lines.append(txt)
+            elif is_includehtml(l):
+                do_includehtml(l, lines)
             else:
                 lines.append(l)
     txt = string.join(lines, "")
     return (txt, tokens, keys)
-
-# TODO: use a routine from textile?
-"""
-def htmlify(txt):
-    toreplace = {"&" : "&amp;",
-            ">" : "&gt;",
-            "<" : "&lt;"}
-    for k in toreplace.keys():
-        txt = txt.replace(k, toreplace[k])
-    return txt
-"""
 
 def htmlify(text):
     text = text.replace("&","&amp;")
@@ -178,6 +181,8 @@ def htmlify(text):
     text = text.replace(">","&gt;")
     return text
 
+# Return a <code class=$x> where $x is a class name understood by highlight.js
+# We auto-detect $x from file name.
 def code_for_filename(filename):
     ext_to_classname = { 
         ".cpp" : "cpp",
