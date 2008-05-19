@@ -154,7 +154,7 @@ This trick can be used in combination with other optimizations.
 
 h2. Comparing different approaches.
 
-Here are the file sizes of various versions, compiled with gcc 4.1.3 on Ubuntu and stripped of symbols, to get the most accurate picture of the size of the code:
+Here are the file sizes of various versions, compiled with gcc and stripped of symbols (to get the most accurate picture of the size of the code).
 
 @includetxt parsedstr-size-stats.html
 

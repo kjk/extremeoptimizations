@@ -3,8 +3,6 @@
 # This script generates the info about sizes of various versions
 # of ParsedStr class in a format suitable for including with
 # optimization_story.textile
-#
-# TODO: also include version of the compiler used
 
 import sys, os.path, subprocess, string, re
 
@@ -63,7 +61,7 @@ def write(path, data):
 def html_from_filesinfo(filesinfo):
     lines = []
     lines.append("<center>")
-    lines.append("<table>")
+    lines.append("<table cellspacing=4>")
     lines.append("<tr>")
     lines.append("<th>Version</th>")
     lines.append("<th>File size</th>")
@@ -73,14 +71,21 @@ def html_from_filesinfo(filesinfo):
     for fi in filesinfo:
         lines.append("<tr>")
         lines.append("<td>%s</td>" % fi.readablename)
-        lines.append("<td>%d</td>" % fi.size)
-        lines.append("<td>%d</td>" % fi.size_vs_smallest)
-        lines.append("<td>%d</td>" % fi.sizeof)
+        lines.append("<td align=center>%d</td>" % fi.size)
+        lines.append("<td align=center>%d</td>" % fi.size_vs_smallest)
+        lines.append("<td align=center>%d</td>" % fi.sizeof)
         lines.append("</tr>")
+    lines.append("<tr align=center bgcolor=#dedede><td colspan='4'><font size=-1>%s</font></td></tr>" % gcc_version())
     lines.append("</table>")
     lines.append("</center>")
     lines.append("")
     return string.join(lines, "\n")
+
+def gcc_version():
+    (stdout, stderr) = run_cmd_throw("gcc", "--version")
+    lines = string.split(stdout, "\n")
+    ver = lines[0].strip()
+    return ver
 
 def get_parsed_str_sizeof(exe):
     (stdout, stderr) = run_cmd_throw(exe)
