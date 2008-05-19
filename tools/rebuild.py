@@ -140,10 +140,18 @@ def do_includetxt(line, lines):
 
 g_do_tokens = True
 
+# Generate sth. like this:
+# "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.cpp.txt):
+def src_textile_link(basename):
+    return '"%s":src/%s.html ("raw":src/%s.txt):' % (basename, basename, basename)
+
+def src_html_link(basename):
+    return "<a href='src/%s.html'>%s</a> (<a href='src/%s.txt'>raw</a>):" % (basename, basename, basename)
+
 # Load a source *.textile file
 # Returns (<txt>, <dict>) tuple, where <dict> is a dictionary of
 # name/value pairs in the file and the <txt> is the rest of the file
-def parsesrc(srcpath):
+def parse_textile(srcpath):
     (ST_START, ST_BODY) = range(2)
     keys = {}
     lines = []
@@ -202,7 +210,7 @@ def dofile(srcpath):
         print("Ignoring file '%s'" % srcpath)
         return
     tmppath = tmpfilename(srcpath)
-    (txt, tokens, keys) = parsesrc(srcpath)
+    (txt, tokens, keys) = parse_textile(srcpath)
     title = ""
     if "Title" in keys:
         title = keys["Title"]
@@ -215,8 +223,10 @@ def dofile(srcpath):
         #print tokens.keys()
         for token in tokens.keys():
             codetxt = tokens[token][1]
+            filename = os.path.basename(tokens[token][0])
             c = code_for_filename(tokens[token][0])
-            codehtml = "\n<pre>" + c + "\n" + htmlify(codetxt) + "</code></pre>\n"
+            srclinktxt = src_html_link(filename)
+            codehtml = srclinktxt + "\n<pre>" + c + "\n" + htmlify(codetxt) + "</code></pre>\n"
             token = token.strip()
             html = html.replace(token, codehtml)
     write(dstpath, hdr + html + ftr)
