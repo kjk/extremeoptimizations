@@ -2,6 +2,9 @@ Title: Optimizing size of structures
 
 h1. Optimizing size of structures
 
-Proper aligning of fields, packing.
+To cover: 
 
+* rearranging of fields in a struct to match how C compiler lays them out
+* packing with #pragma pack(),
+* using bitfields to compress integers
 

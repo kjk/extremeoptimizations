@@ -1,0 +1,7 @@
+Title: Misc ideas
+
+h1. Misc ideas
+
+Undecided whether cover those topics or not:
+
+* compression (pimp lzo as a small compression/decompression library)

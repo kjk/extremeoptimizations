@@ -1,0 +1,7 @@
+Title: Things to know.
+
+To cover:
+
+* size of basic types
+* how compiler lays out C structures (structure alignment)
+* malloc overhead: padding of allocations + at least 8 byte overhead per allocation for maintaining malloc data structures. Lots of small allocations => bad

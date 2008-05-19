@@ -1,0 +1,28 @@
+Title: Extreme (size) optimization in C, C++ and Objective-C.
+
+h1. Extreme (size) optimization in C, C++ and Objective-C.
+
+by "Krzysztof Kowalczyk":http://blog.kowalczyk.info
+
+h2. What is this about?
+
+This document presents extreme techniques for optimizing the size of C, C++ and Objective-C programs. It's about optimizing both the size of the final executable and the amount of memory used at runtime.
+
+!>http://farm1.static.flickr.com/206/512024537_3da49317eb_m.jpg!:http://www.flickr.com/photos/strict/512024537/
+
+Sometimes the code will also become faster, although speed is not the main focus.
+
+All examples come from optimizing real-life code.
+
+h2. Table of contents
+
+# "Why optimize?":why_optimize.html
+# "An optimization story":optimization_story.html
+# "Things you need to know":things_to_know.html
+# "Measuring size":measuring_size.html
+# "Asking the compiler to optimize for you":asking_compiler.html
+# "Optimizing size of structures":optimize_size_of_structures.html
+# "Optimizing arrays of structures":optimize_arrays_of_structures.html
+# "Passing by value vs. passing by reference":pass_by_value.html
+# "Smaller code through better architecture":better_architecture.html
+# "Other misc ideas":misc_ideas.html

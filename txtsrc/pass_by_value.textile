@@ -1,0 +1,6 @@
+Title: Passing by value vs. passing by reference.
+
+To cover:
+
+* passing structures by value is bad => lots of copying. Example from tinypy
+

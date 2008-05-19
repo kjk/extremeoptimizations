@@ -2,5 +2,8 @@ Title: Optimizing arrays of structures
 
 h1. Optimizing arrays of structures
 
-Breaking them into arrays of smaller items. 2 arrays of same size into one array
+To cover:
+
+* breaking them into arrays of smaller items
+* 2 arrays of same size into one array
 
