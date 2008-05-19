@@ -122,13 +122,17 @@ If there are only few strings and @name()@ and @value()@ are called only a coupl
 
 How do you know which case applies in your code? Use a profiler, "Valgrind":http://valgrind.org is your friend.
 
-h2. Taking ownership of the string.
+h2. Avoiding copying the string.
 
-What if we can modify the string passed in to @ParsedStr::parse()@? What if we can assume that the lifetime of that string is longer than lifetime of that string? We can avoid allocating a copy and freeing it.
+What if we can modify the string passed in to @ParsedStr::parse()@? What if we can assume that the lifetime of that string is longer than lifetime of @ParsedStr@ object?
+
+If that's true, we can avoid allocating a copy of the string and freeing it.
 
 This optimization can be combined with most other optimization. Here's the code after applying it previous version:
 
-This approach is more error prone because clients have to ensure the proper lifetime of the string, but hey, this is about extreme optimizations, not safe ones.
+@include ParsedStrOptNoOffsetsNoDup.cpp 14 32
+
+This approach is more error prone because clients have to ensure proper lifetime of the string, but hey, this is about extreme optimizations, not safe ones.
 
 h2. Optimizing for common case.
 
@@ -156,9 +160,9 @@ Here are the file sizes of various versions, compiled with gcc 4.1.3 on Ubuntu a
 
 The interesting size is file size delta, which shows how much bigger a given implementation of @ParsedStr@ class is compared to a version that does nothing.
 
-STL version is the worst by a wide margin. Not only is it more than 6 times bigger than the smallest version but also 4 times bigger than the biggest non-STL version.
+STL version is the worst by a wide margin. Not only is it more than 8 times bigger than the smallest version but also 4 times bigger than the biggest non-STL version.
 
-Even within relatively similar non-STL versions, the second smallest is 50% bigger than the smallest.
+Even within relatively similar in size non-STL versions, the smallest version is almost half the size of the third smallest versions.
 
 h2. Conclusions.
 

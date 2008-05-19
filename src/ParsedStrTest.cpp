@@ -30,6 +30,10 @@
 #include "ParsedStrOptNoOffsets.h"
 #endif
 
+#ifdef VER_OPT_NO_OFFSETS_NO_DUP
+#include "ParsedStrOptNoOffsetsNoDup.h"
+#endif
+
 #ifdef VER_OPT_COMMON
 #include "ParsedStrOptCommon.h"
 #endif
