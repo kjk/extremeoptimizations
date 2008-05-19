@@ -162,7 +162,7 @@ The interesting metric is file size delta. It shows how much bigger a given impl
 
 STL version is the worst by a wide margin. Not only it's more than 8 times bigger than the smallest version but also 4 times bigger than the biggest non-STL version.
 
-Even within relatively similar in size non-STL versions, the smallest version is almost half the size of the third smallest versions.
+Even within relatively similar in size non-STL versions, the smallest version is more than 50% smaller than the third smallest versions.
 
 h2. Conclusions.
 
