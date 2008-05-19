@@ -12,3 +12,4 @@ The most common practice when building C/C++ software is to either build debug v
 
 TODO: compile some largish program with various optimizations and report the differences.
 
+TODO: mention thumb on ARM (saves 30% of code space, makes programs 30% slower)

@@ -158,7 +158,7 @@ Here are the file sizes of various versions, compiled with gcc and stripped of s
 
 @includetxt parsedstr-size-stats.html
 
-The interesting metric is file size delta, which shows how much bigger a given implementation of @ParsedStr@ class is compared to a version that does nothing.
+The interesting metric is file size delta. It shows how much bigger a given implementation of @ParsedStr@ class is compared to a version that does nothing.
 
 STL version is the worst by a wide margin. Not only it's more than 8 times bigger than the smallest version but also 4 times bigger than the biggest non-STL version.
 
