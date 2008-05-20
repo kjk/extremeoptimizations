@@ -13,14 +13,14 @@ ParsedStr::ParsedStr()
 
 bool ParsedStr::parse(const char *str)
 {
+    assert(NULL == _str); /* don't call me twice */
     _str = strdup(str);
     _count = 0;
     char *s = (char*)_str;
     while (NULL != delim_str_iter(&s)) {
         ++_count;
     }
-    if (_count % 2 != 0) {
-        /* malformed string */
+    if (_count % 2 != 0) { /* malformed string */
         return false;
     }
     _count = _count / 2;

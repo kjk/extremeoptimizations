@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "ParsedStrUnopt.h"
 #include "ParsedStrUtil.h"
 
@@ -12,14 +13,14 @@ ParsedStr::ParsedStr()
 
 bool ParsedStr::parse(const char *s)
 {
+    assert(NULL == _names); /* don't call me twice */
     char *scopy = strdup(s);
     int str_count = 0;
     char *stmp = scopy;
     while (NULL != delim_str_iter(&stmp)) {
         ++str_count;
     }
-    if (str_count % 2 != 0) {
-        /* malformed string */
+    if (str_count % 2 != 0) { /* malformed string */
         free(scopy);
         return false;
     }

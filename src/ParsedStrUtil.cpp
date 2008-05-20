@@ -6,7 +6,6 @@ static bool is_delim(char c)
     return (('=' == c) || ('&' == c) || (0 == c));
 }
 
-
 void str_skip(char **str)
 {
     char *s = *str;

@@ -1,0 +1,65 @@
+<center>
+<table cellspacing=4>
+<tr>
+<th>Version</th>
+<th>File size</th>
+<th>File size delta</th>
+<th>sizeof(ParsedStr)</th>
+</tr>
+<tr>
+<td>A no-op version</td>
+<td align=center>12888</td>
+<td align=center>0</td>
+<td align=center>1</td>
+</tr>
+<tr>
+<td>Avoiding copying the string</td>
+<td align=center>13092</td>
+<td align=center>204</td>
+<td align=center>8</td>
+</tr>
+<tr>
+<td>Getting rid of offsets</td>
+<td align=center>13092</td>
+<td align=center>204</td>
+<td align=center>8</td>
+</tr>
+<tr>
+<td>Optimizing for common case</td>
+<td align=center>13140</td>
+<td align=center>252</td>
+<td align=center>256</td>
+</tr>
+<tr>
+<td>Optimizing allocations of strings</td>
+<td align=center>13148</td>
+<td align=center>260</td>
+<td align=center>16</td>
+</tr>
+<tr>
+<td>Offsets instead of pointers</td>
+<td align=center>13148</td>
+<td align=center>260</td>
+<td align=center>12</td>
+</tr>
+<tr>
+<td>One array instead of two</td>
+<td align=center>13148</td>
+<td align=center>260</td>
+<td align=center>12</td>
+</tr>
+<tr>
+<td>Naive non-STL version</td>
+<td align=center>13148</td>
+<td align=center>260</td>
+<td align=center>12</td>
+</tr>
+<tr>
+<td>Naive STL version</td>
+<td align=center>19296</td>
+<td align=center>6408</td>
+<td align=center>24</td>
+</tr>
+<tr align=center bgcolor=#dedede><td colspan='4'><font size=-1>i686-apple-darwin9-gcc-4.0.1 (GCC) 4.0.1 (Apple Inc. build 5483)</font></td></tr>
+</table>
+</center>

@@ -13,6 +13,7 @@ ParsedStr::ParsedStr()
 
 bool ParsedStr::parse(const char *str)
 {
+    assert(NULL == _str); /* don't call me twice */
     size_t len = strlen(str);
     if (len > sizeof(_buf)-1)
         _str = strdup(str);
@@ -26,8 +27,7 @@ bool ParsedStr::parse(const char *str)
     while (NULL != delim_str_iter(&s)) {
         ++_count;
     }
-    if (_count % 2 != 0) {
-        /* malformed string */
+    if (_count % 2 != 0) { /* malformed string */
         return false;
     }
     _count = _count / 2;

@@ -11,7 +11,20 @@ SCRIPTDIR = os.path.dirname(SCRIPTDIR)
 SRCDIR = os.path.join(SCRIPTDIR, "..", "src")
 TXTSRCDIR = os.path.join(SCRIPTDIR, "..", "txtsrc")
 OBJDIR = os.path.join(SRCDIR, "obj-small")
-OUTFILEPATH = os.path.join(TXTSRCDIR, "parsedstr-size-stats.html")
+
+def is_mac(): return sys.platform == 'darwin'
+def is_win(): return sys.platform in ("win32", "cygwin")
+def is_linux(): return sys.platform.startswith("linux") # on my Ubuntu it's "linux2"
+def is_cygwin(): return sys.platform == "cygwin"
+
+SYSTEM = "linux"
+if is_mac():
+    SYSTEM = "mac"
+elif not is_linux():
+    print("Not mac or linux. System is '%s'. Aborting." % sys.platform)
+    sys.exit(1)
+
+OUTFILEPATH = os.path.join(TXTSRCDIR, "parsedstr-size-stats-%s.html" % SYSTEM)
 
 def log(txt):
     print txt,

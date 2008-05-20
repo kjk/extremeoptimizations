@@ -47,7 +47,7 @@ It's both simpler and faster.
 
 @includesrc ParsedStrUnopt.h 4 9
 
-@includesrc ParsedStrUnopt.cpp 13 50
+@includesrc ParsedStrUnopt.cpp 13 51
 
 h2. Optimizing allocations of strings
 
@@ -154,15 +154,21 @@ This trick can be used in combination with other optimizations.
 
 h2. Comparing different approaches.
 
-Here are the file sizes of various versions, compiled with gcc and stripped of symbols (to get the most accurate picture of the size of the code).
+Here are the file sizes of various versions, compiled with gcc on Linux and stripped of symbols (to get the most accurate picture of the size of the code):
 
-@includetxt parsedstr-size-stats.html
+@includetxt parsedstr-size-stats-linux.html
+
+Here's the same data when using gcc on Mac OS X 10.5:
+
+@includetxt parsedstr-size-stats-mac.html
 
 The interesting metric is file size delta. It shows how much bigger a given implementation of @ParsedStr@ class is compared to a version that does nothing.
 
-STL version is the worst by a wide margin. Not only it's more than 8 times bigger than the smallest version but also 4 times bigger than the biggest non-STL version.
+Why such a difference between Linux and Mac versions? On Mac, a linker has a @-dead_strip@ option that removes code not used anywhere. On Linux, sadly, this very basic functionality is not yet present in gcc toolchain. Let's use results from Mac, because they better represent the real code generated.
 
-Even within relatively similar in size non-STL versions, the smallest version is more than 50% smaller than the third smallest versions.
+As to the size, STL version is the worst by a wide margin. Not only it's more than 31 times bigger than the smallest version but also 24 times bigger than the biggest non-STL version.
+
+Non-STL versions are very close in size, but if you're an extremist like us, saving 56 or 48 bytes is still worth fighting for.
 
 h2. Conclusions.
 
