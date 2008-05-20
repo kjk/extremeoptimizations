@@ -6,17 +6,15 @@ h1. An optimization story
 
 Here's an example of optimizing a piece of code, starting from simple, unoptimized code to extremely optimized, yet still simple code.
 
-The task is to write a class to parse a string in the form @name1=val1&name2=val2&name3=val3&...@ into name/value pairs and provide an easy to use interface for accessing names and values.
+The task is to write a class that parses a string in the form @name1=val1&name2=val2&name3=val3&...@ and provides a simple interface for accessing names and values.
 
-This is a simplified version of parsing arguments of HTTP GET requests and not a made up example.
+It's not a made up example but a very real (albeit simplified) problem of parsing arguments of HTTP GET request.
 
-We'll be optimizing the amount of memory used at runtime for storing parsed strings.
-
-Here's the interface:
+We'll be trying to minimize size of the code and the amount of memory used at runtime for storing parsed strings. Here's the interface:
 
 @includesrc ParsedStrDummy.h 4 11
 
-Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.cpp.txt) and a "makefile":src/makefile.html ("raw":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version.
+Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.cpp.txt) and a "makefile":src/makefile.html ("raw":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version and ensure all versions work the same way.
 
 Common utility routines are in "ParsedStrUtil.cpp":src/ParsedStrUtil.cpp.html ("raw":src/ParsedStrUtil.cpp.txt).
 
