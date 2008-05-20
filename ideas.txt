@@ -47,3 +47,9 @@ List other famous/inspirational people that like to optimize the code.
 Wozniak, Amiga crew, demo scene for <64 kB demos, early Macintosh team (link to folklore.org story about squezing the rom).
 Gates (http://programmersatwork.wordpress.com/bill-gates-1986/ describes squeezing basic in 4k)
 
+10. add forums
+
+11. rss for updates of the book (when new chapters get published). or maybe an e-mail signup form?
+
+12. Using stuff provided by the OS. libjpeg vs. that OLE function for loading arbitrary bitmap formats on Windows.
+sha1 code vs. using sha1 from windows cryptographic provider. Write code and stats on size differences.
