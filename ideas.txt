@@ -1,0 +1,49 @@
+List of ideas I have for things to add:
+
+1. search box hooked up to google that only searches the site
+
+2. A section on size-friendly libraries (sqlite, lzo, others?)
+
+3. A section on recommended books (Deep C Secrets, K&R C Programming Language, 
+PJ Pluagher Elements of style, Bentley Prorgramming Pearls)
+
+4. A section on inspiring code (tinycc, qemu, inferno)
+
+5. Describe
+
+char *strarr[] = {
+    "foo", "bar", "oh"
+}
+
+=>
+"foo\0bar\0\oh\0\0"
+
+optimization. Figure out if pointers in strarr require relocation during loading.
+
+6. Describe:
+
+  enum val;
+  switch (val) {
+    case FOO: return "foo";
+    case BAR: return "bar";
+  }
+  
+=> 
+
+ensure enum val has values from 0 to N and turn it into 
+char *strarr[] { "foo", "bar"}
+and strarr[val] (or add trick from 5)
+
+other cases where switch/case can be optimized e.g. http://repo.or.cz/w/syx.git?a=commitdiff;h=87cdcaef0ec48bb35744ace88f46051767db5be9
+and from python parser.
+
+7. A page describing various calling conventions of x86 (to explain the effects of cl.exe's switch of changing default calling conventions to sth. faster)
+
+8. Mention that functions are aligned for speed (=> bigger size of code. Also explains why size of executable in optimization story is same even if functions are not
+
+9. People like us.
+
+List other famous/inspirational people that like to optimize the code.
+Wozniak, Amiga crew, demo scene for <64 kB demos, early Macintosh team (link to folklore.org story about squezing the rom).
+Gates (http://programmersatwork.wordpress.com/bill-gates-1986/ describes squeezing basic in 4k)
+
