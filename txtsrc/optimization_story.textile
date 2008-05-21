@@ -84,6 +84,8 @@ This saves one @malloc()@ and a little bit of memory due to less @malloc()@ over
 
 This technique can also be applied in languages like C#, Java and with STL vectors.
 
+Depending on access patterns of the data, you might try to improve cache locality (and speed) of access by using a different order e.g. instead of interleaving names and values, you can first store all values and then all names.
+
 h2. Offsets instead of pointers
 
 A pointer uses 4 bytes on 32-bit machine and 8 bytes on (increasingly more common) 64-bit machines.

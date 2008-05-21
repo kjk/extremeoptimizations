@@ -53,3 +53,8 @@ Gates (http://programmersatwork.wordpress.com/bill-gates-1986/ describes squeezi
 
 12. Using stuff provided by the OS. libjpeg vs. that OLE function for loading arbitrary bitmap formats on Windows.
 sha1 code vs. using sha1 from windows cryptographic provider. Write code and stats on size differences.
+
+13. optimizing dispatch table in Huemul smalltalk:
+http://www.guillermomolina.com.ar/svn/huemul/src/primitive.c
+
+14. Add nice graphs where appropriate (e.g. using Google's Chart API)
