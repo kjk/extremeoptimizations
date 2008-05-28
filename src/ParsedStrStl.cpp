@@ -1,5 +1,6 @@
 #include "ParsedStrStl.h"
 #include "ParsedStrUtil.h"
+#include <assert.h>
 
 ParsedStr::ParsedStr()
 {
