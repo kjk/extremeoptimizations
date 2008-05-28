@@ -43,11 +43,19 @@ OUTDIR=obj-$(CFG)
 OUTDIR_EXISTS = $(OUTDIR)/.ensure_exists
 O=$(OUTDIR)
 
+ifeq ($(STRIP),yes)
 all: $(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped \
 	$(O)/parsed_str_unopt_stripped $(O)/parsed_str_opt_alloc_stripped \
 	$(O)/parsed_str_opt_one_array_stripped $(O)/parsed_str_opt_offsets_stripped \
 	$(O)/parsed_str_opt_no_offsets_stripped $(O)/parsed_str_opt_common_stripped \
 	$(O)/parsed_str_opt_no_offsets_no_dup_stripped
+else
+all: $(O)/parsed_str_dummy $(O)/parsed_str_stl \
+	$(O)/parsed_str_unopt $(O)/parsed_str_opt_alloc \
+	$(O)/parsed_str_opt_one_array $(O)/parsed_str_opt_offsets \
+	$(O)/parsed_str_opt_no_offsets $(O)/parsed_str_opt_common \
+	$(O)/parsed_str_opt_no_offsets_no_dup
+endif
 
 rebuild: force
 	make all CFG=small
@@ -59,55 +67,55 @@ $(OUTDIR_EXISTS):
 	touch $(OUTDIR_EXISTS)
 
 $(OUTDIR)/parsed_str_dummy: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp ParsedStrDummy.cpp -DVER_DUMMY -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp ParsedStrDummy.cpp -DVER_DUMMY $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_dummy_stripped: $(OUTDIR)/parsed_str_dummy
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_stl: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrStl.cpp -DVER_STL -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrStl.cpp -DVER_STL $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_stl_stripped: $(OUTDIR)/parsed_str_stl
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_unopt: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrUnopt.cpp -DVER_UNOPT -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrUnopt.cpp -DVER_UNOPT $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_unopt_stripped: $(OUTDIR)/parsed_str_unopt
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_opt_alloc: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptAlloc.cpp -DVER_OPT_ALLOC -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptAlloc.cpp -DVER_OPT_ALLOC $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_opt_alloc_stripped: $(OUTDIR)/parsed_str_opt_alloc
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_opt_one_array: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptOneArray.cpp -DVER_OPT_ONE_ARRAY -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptOneArray.cpp -DVER_OPT_ONE_ARRAY $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_opt_one_array_stripped: $(OUTDIR)/parsed_str_opt_one_array
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_opt_offsets: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptOffsets.cpp -DVER_OPT_OFFSETS -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptOffsets.cpp $(LDFLAGS) -DVER_OPT_OFFSETS -o $@
 
 $(OUTDIR)/parsed_str_opt_offsets_stripped: $(OUTDIR)/parsed_str_opt_offsets
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_opt_no_offsets: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptNoOffsets.cpp -DVER_OPT_NO_OFFSETS -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptNoOffsets.cpp -DVER_OPT_NO_OFFSETS $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_opt_no_offsets_stripped: $(OUTDIR)/parsed_str_opt_no_offsets
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_opt_no_offsets_no_dup: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptNoOffsetsNoDup.cpp -DVER_OPT_NO_OFFSETS_NO_DUP -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptNoOffsetsNoDup.cpp -DVER_OPT_NO_OFFSETS_NO_DUP $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_opt_no_offsets_no_dup_stripped: $(OUTDIR)/parsed_str_opt_no_offsets_no_dup
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_opt_common: $(OUTDIR_EXISTS) force
-	gcc $(CFLAGS) $(LDFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptCommon.cpp -DVER_OPT_COMMON -o $@
+	cc $(CFLAGS) ParsedStrTest.cpp  ParsedStrUtil.cpp ParsedStrOptCommon.cpp -DVER_OPT_COMMON $(LDFLAGS) -o $@
 
 $(OUTDIR)/parsed_str_opt_common_stripped: $(OUTDIR)/parsed_str_opt_common
 	strip -S -o $@ $<
