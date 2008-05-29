@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "temp_alloc.h"
 
@@ -84,6 +85,18 @@ int temp_realloc(size_t size, void **key)
     return temp_alloc(size, key); /* it really is the same thing */
 }
 
+/* TODO: because of the stack frame for temp_freeall() callitself, it might miss
+   some allocations that could have been freed. To make it pich perfect,
+   currstackpos would have to be passed to it. Could be done implicitly through
+   macro:
+
+   #define temp_freeall() { \
+      char c; \
+      temp_freeall(&c); \
+   }
+
+   void temp_freeall(char *currstacktop);
+*/
 void temp_freeall()
 {
     meminfo *curr, *tmp;
@@ -107,7 +120,15 @@ void temp_freeall()
             curr = curr->next;
         }
     }
+}
 
+int temp_memdup(void *mem, size_t size, void **key)
+{
+    int ok = temp_alloc(size, key);
+    if (!ok)
+        return 0;
+    memcpy(*key, mem, size);
+    return 1;
 }
 
 size_t temp_total_alloced()
@@ -115,3 +136,12 @@ size_t temp_total_alloced()
     return total_alloced;
 }
 
+int temp_strdup(const char *txt, char **key)
+{
+    if (!txt) {
+        *key = 0;
+        return 1;
+    }
+
+    return temp_memdup((void*)txt, strlen(txt)+1, (void**)key);
+}

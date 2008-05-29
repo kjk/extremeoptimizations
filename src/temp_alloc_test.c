@@ -7,6 +7,8 @@ static void foo()
 {
     void *tmp;
     void *m1;
+    char *s;
+
     temp_alloc(200, &m1);
     memset(m1, 0, 200);
     assert(temp_total_alloced() == 200);
@@ -25,6 +27,9 @@ static void foo()
     assert(temp_total_alloced() == 300);
     temp_freeall();
     assert(temp_total_alloced() == 300);
+
+    temp_strdup("foo", &s);
+    assert(0 == strcmp("foo", s));
 }
 
 static void bar()
