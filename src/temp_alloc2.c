@@ -6,6 +6,8 @@
 
 #include "temp_alloc.h"
 
+#define MAX_UNIQUE_KEYS 128
+
 #ifdef NDEBUG
 static void verify_on_stack(void *addr)
 {
@@ -16,29 +18,37 @@ static void verify_on_stack(void *addr)
 #endif
 
 typedef struct meminfo {
-    struct meminfo *next;
     void **key;
     size_t size;
-    /* data follows */
+    void *mem;
 } meminfo;
 
-static meminfo *first = NULL;
-size_t total_alloced = 0;
+meminfo allocs_info[MAX_UNIQUE_KEYS] = {0};
+int uniqe_allocs = 0;
 
-#define FREE_THRESHOLD 4*1024
+size_t total_alloced = 0;
 
 static void *ptr_from_meminfo(meminfo *mi)
 {
-    char *d = (char*)mi + sizeof(meminfo);
-    return (void*)d;
+    return mi->mem;
 }
 
-/* Allocate */
+/* Allocate temporary space of a given <size> and put in under <key>.
+   Returns 0 if failed to allocate, 1 otherwise.
+   Assumptions: number of unique allocation points (i.e. unique values of
+   <key>) is relatively small so linear search is ok. */
 int temp_alloc(size_t size, void **key)
 {
-    meminfo *curr;
-    meminfo **prev;
     verify_on_stack(key);
+
+    if (unique_allocs > 0) {
+        /* either find existing entry for <key> or a position where it should
+           get inserted */
+           int first = 0;
+           int last = unique_allocs;
+           
+    }
+
     curr = first;
     prev = &first;
     /* see if we already have a memory with the same key. Reuse the memory
@@ -87,31 +97,21 @@ int temp_alloc(size_t size, void **key)
 
 int temp_realloc(size_t size, void **key)
 {
-    return temp_alloc(size, key); /* it really is the same thing */
+    return temp_alloc(size, key);
 }
 
 /* Free all temporary allocations that are no longer needed */
 void temp_freeall_helper(char *currstacktop)
 {
-    meminfo *curr, *tmp;
-    meminfo **prev;
-    /* the stack grows down so I can free all memory whose key address
-       is < currstackpos */
-    prev = &first;
-    curr = first;
-    while (curr) {
+    meminfo *curr = &allocs_info[0];
+    meminfo *last = &allocs_info[unique_allocs];
+    while (curr < last) {
         char *addr = (char*)curr->key;
-        if (currstacktop > addr) {
-            /* free it */
-            *prev = curr->next;
-            tmp = curr->next;
-            total_alloced -= curr->size;
-            free((void*)curr);
-            curr = tmp;
-        } else {
-            prev = &curr;
-            curr = curr->next;
+        if (curr->mem && currstacktop > addr) {
+            free(curr->mem);
+            curr->mem = 0;
         }
+        ++curr;
     }
 }
 
