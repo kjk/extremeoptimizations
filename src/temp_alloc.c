@@ -40,13 +40,17 @@ int temp_alloc(size_t size, void **key)
     verify_on_stack(key);
     curr = first;
     prev = &first;
+    /* see if we already have a memory with the same key. Reuse the memory
+       if we have and its size is big enough.
+       TODO: this is meant to avoid malloc() calls, but maybe it would be faster
+       to just malloc() without the check, to avoid traversing the list */
     while (curr) {
         if (key == curr->key)
             break;
         prev = &curr;
         curr = curr->next;
     }
-    if (curr && curr->size > size) {
+    if (curr && curr->size >= size) {
         /* TODO: should periodically free curr to prevent unbound grow of cache.
            On the other hand, if we call temp_freeall() frequently enough,
            that shouldn't be the problem */
@@ -102,7 +106,7 @@ void temp_freeall()
     meminfo *curr, *tmp;
     meminfo **prev;
     /* the stack grows down so I can free all memory whose key address
-       is > currstackpos */
+       is < currstackpos */
     char *currstackpos = (char*)&curr;
     prev = &first;
     curr = first;

@@ -232,7 +232,7 @@ def dofile(srcpath):
     write(dstpath, hdr + html + ftr)
 
 def issourcecodefile(path):
-    for ext in [".cpp", "h", "makefile"]:
+    for ext in [".cpp", ".c", ".h", "makefile"]:
         if path.endswith(ext): return True
     return False
 

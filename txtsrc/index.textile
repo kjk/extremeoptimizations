@@ -24,7 +24,9 @@ h2. Table of contents
 # Optimizing size of structures
 # Optimizing arrays of structures
 # Passing by value vs. passing by reference
+# Allocating without freeing
 # Smaller code through better architecture
+# Other misc ideas
 
 <hr>
 

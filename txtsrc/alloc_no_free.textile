@@ -1,0 +1,37 @@
+Title: Allocating without freeing
+
+h1. Allocating without freeing
+
+Do you have to @free()@ every time you @malloc()@? Conventional wisdom would have you belived that yes, if you want to avoid memory leaks, you have to free everything you allocate. Everybody programming in C knows that memory leaks are common.
+
+But what about garbage collection? In Java, C# or Python you just allocate and the runtime takes care of freeing the memory for you when it's apropriate, through the magic of garbage collection.
+
+h2. Garbage collection in C?
+
+Unfortunately generic garbage collection doesn't play well with C. While many experimented with adding garbage collection to C/C++ program, you don't see it being used on a regular basis. Garbage collection is supposed to simplify programmer's life but trying to combine it with C creates more problems than it solves.
+
+h2. Temporary allocations only
+
+This technique only applies to temporary allocations. Temporary allocation is a piece of memory that is used only in a given function or the functions it calls. It's quite common pattern in C: allocate piece of memory, do something with it, free it.
+
+Imagine that you could just allocate temporary memory and never have to worry about freeing it explicitly. You could save few bytes for a free() call and your code would be a little bit shorter and a little bit simpler.
+
+We strongly oppose memory leaks so freeing has to be done. The trick is to be able to tell, at any given time, whether we can free a given temporary allocation or not. Garbage collection uses a sophisticated machinery to determine that but we'll take advantage of our definition of temporary: it's only used in a given function or the functions it calls.
+
+We'll tie allocations to a unique value (let's call it a key) which is an address of a variable on the stack in the function that allocates the temporary memory. We'll store information about each allocation (key and allocated address). Thanks to the nature of C stack, at any time we can go through that information and if current stack address is > key, we can free that temporary.
+
+What we get from that is a little bit smaller binary (no need to add free() for every temporary allocation) and slightly simpler code. We pay with slightly bigger average memory usage and additional code to implement our scheme.
+
+h2. Implementation details
+
+Here's the interface. The only important function is @int temp_alloc(size_t size, void **key)@. You can build more helper functions like @temp_strdup()@ on top of it.
+
+@includesrc temp_alloc.h 4 10
+
+A simple implementation of @temp_alloc()@ keeps all allocation in a linked list.
+
+@includesrc temp_alloc.c 36 85
+
+A simple test to make sure it works.
+
+@includesrc temp_alloc_test.c 6 33
