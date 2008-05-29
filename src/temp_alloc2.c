@@ -19,7 +19,7 @@ static void verify_on_stack(void *addr)
 
 #define ENTRIES_START_COUNT 128
 
-typedef char * key_t; /* for readability */
+typedef char * key_type; /* for readability */
 typedef struct meminfo {
     size_t size;
     void *mem;
@@ -27,8 +27,8 @@ typedef struct meminfo {
 
 /* Store keys and rest of the info in separate arrays for cache efficiency.
    We traverse keys often, so we want the array to be as small as possible */
-static key_t *keys_start = NULL;
-static key_t *keys_end = NULL;
+static key_type *keys_start = NULL;
+static key_type *keys_end = NULL;
 static meminfo *allocs_info = NULL;
 
 int keys_alloced = 0;
@@ -55,8 +55,8 @@ int temp_alloc_helper(size_t size, void **key, int copyold)
     void *old_mem;
     size_t old_size;
     size_t to_copy;
-    key_t k = (key_t)key;
-    key_t *curr = keys_start;
+    key_type k = (key_type)key;
+    key_type *curr = keys_start;
 
     verify_on_stack(key);
 
@@ -78,7 +78,7 @@ int temp_alloc_helper(size_t size, void **key, int copyold)
                 new_keys_alloced = ENTRIES_START_COUNT;
             /* optimisticallya assume that allocations won't fail */
             keys_alloced = new_keys_alloced;
-            keys_start = (key_t*)realloc(keys_start, new_keys_alloced * sizeof(key_t));
+            keys_start = (key_type*)realloc(keys_start, new_keys_alloced * sizeof(key_type));
             allocs_info = (meminfo*)realloc(allocs_info, new_keys_alloced * sizeof(meminfo));
             keys_end = keys_start + keys_alloced;
             curr = &keys_start[keys_count];
@@ -144,7 +144,7 @@ int temp_realloc(size_t size, void **key)
 /* Free all temporary allocations that are no longer needed */
 void temp_freeall_helper(char *currstacktop)
 {
-    key_t *curr = keys_start;
+    key_type *curr = keys_start;
     meminfo *mi_curr = allocs_info;
 
     /* linear search in arrays of keys */
