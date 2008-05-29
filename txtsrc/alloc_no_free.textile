@@ -2,9 +2,9 @@ Title: Allocating without freeing
 
 h1. Allocating without freeing
 
-Do you have to @free()@ every time you @malloc()@? Conventional wisdom would have you belived that yes, if you want to avoid memory leaks, you have to free everything you allocate. Everybody programming in C knows that memory leaks are common.
+Do you have to @free()@ every time you @malloc()@? Conventional wisdom would have you believed that yes, if you want to avoid memory leaks, you have to free everything you allocate. Everybody programming in C knows that memory leaks are common.
 
-But what about garbage collection? In Java, C# or Python you just allocate and the runtime takes care of freeing the memory for you when it's apropriate, through the magic of garbage collection.
+But what about garbage collection? In Java, C# or Python you just allocate and the runtime takes care of freeing the memory for you when it's appropriate, through the magic of garbage collection.
 
 h2. Garbage collection in C?
 
@@ -24,14 +24,22 @@ What we get from that is a little bit smaller binary (no need to add free() for 
 
 h2. Implementation details
 
-Here's the interface. The only important function is @int temp_alloc(size_t size, void **key)@. You can build more helper functions like @temp_strdup()@ on top of it.
+Interface consists of only 3 functions: @temp_alloc()@, @temp_realloc()@ and @temp_freeall()@:
 
-@includesrc temp_alloc.h 4 10
+@includesrc temp_alloc.h 6 13
+
+Helper function like @temp_strdup()@ can be easily build on top of those functions:
+
+@includesrc temp_alloc.h 15 17
 
 A simple implementation of @temp_alloc()@ keeps all allocation in a linked list.
 
-@includesrc temp_alloc.c 36 85
+@includesrc temp_alloc.c 41 99
 
 A simple test to make sure it works.
 
-@includesrc temp_alloc_test.c 6 33
+@includesrc temp_alloc_test.c 15 42
+
+Another implementation keeps the values in an array. It's probably easier to understand than linked-list solution and should be slightly faster (traversal of array is more cache friendly) but it's slightly longer.
+
+@includesrc temp_alloc2.c 43 116

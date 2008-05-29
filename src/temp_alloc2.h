@@ -1,9 +1,8 @@
-/* This code is in public domain. 
-   Take all the code you want, we'll just write more. */
+/* Public domain code. Take all the code you want, we'll just write more. */
 #ifndef TEMP_ALLOC_H__
 #define TEMP_ALLOC_H__
 
-i/* core APIs */
+/* core APIs */
 int temp_alloc(size_t size, void **key);
 int temp_realloc(size_t size, void **key);
 void temp_freeall_helper(char *currstacktop);

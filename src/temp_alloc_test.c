@@ -1,5 +1,4 @@
-/* This code is in public domain. 
-   Take all the code you want, we'll just write more. */
+/* Public domain code. Take all the code you want, we'll just write more. */
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
