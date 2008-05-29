@@ -31,7 +31,8 @@ $(info gcc machine: $(shell $(CC) -dumpmachine))
 $(info )
 
 ifeq ($(CFG),)
-$(warning Configuration not specified - using default debug configuration)
+$(info Configuration not specified - using default debug configuration)
+$(info )
 CFG=dbg
 endif
 
@@ -89,13 +90,13 @@ $(OUTDIR_EXISTS):
 	touch $(OUTDIR_EXISTS)
 
 $(OUTDIR)/temp_alloc_test: $(OUTDIR_EXISTS) force
-	cc $(CFLAGS) temp_alloc_test.c temp_alloc.c -DTEMP_ALLOC1 $(LDFLAGS) -o $@
+	cc $(CFLAGS) temp_alloc_test.c temp_alloc.c temp_alloc_helpers.c -DTEMP_ALLOC1 $(LDFLAGS) -o $@
 
 $(OUTDIR)/temp_alloc_test_stripped: $(OUTDIR)/temp_alloc_test
 	strip -S -o $@ $<
 
 $(OUTDIR)/temp_alloc2_test: $(OUTDIR_EXISTS) force
-	cc $(CFLAGS) temp_alloc_test.c temp_alloc2.c -DTEMP_ALLOC2 $(LDFLAGS) -o $@
+	cc $(CFLAGS) temp_alloc_test.c temp_alloc2.c temp_alloc_helpers.c -DTEMP_ALLOC2 $(LDFLAGS) -o $@
 
 $(OUTDIR)/temp_alloc2_test_stripped: $(OUTDIR)/temp_alloc2_test
 	strip -S -o $@ $<

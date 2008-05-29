@@ -1,21 +1,5 @@
 /* Public domain code. Take all the code you want, we'll just write more. */
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "temp_alloc.h"
-
-#define STATS
-
-#ifdef NDEBUG
-static void verify_on_stack(void *addr)
-{
-    /* TODO: assert()/crash if addr is not on stack */
-}
-#else
-#define verify_on_stack(addr)
-#endif
 
 typedef struct meminfo {
     struct meminfo *next;
@@ -27,10 +11,8 @@ typedef struct meminfo {
 static meminfo *first = NULL;
 size_t total_alloced = 0;
 
-#ifdef STATS
 int total_allocs = 0;
 int allocs_from_cache = 0;
-#endif
 
 static void *ptr_from_meminfo(meminfo *mi)
 {
@@ -42,8 +24,9 @@ static void *ptr_from_meminfo(meminfo *mi)
    Returns 0 if failed to allocate, 1 otherwise.
    Assumptions: number of unique allocation points (i.e. unique values of
    <key>) is relatively small so linear search is ok. */
-int temp_alloc(size_t size, void **key)
+static int temp_alloc_helper(size_t size, void **key, int copyold)
 {
+    /* TODO: implement copyold */
     meminfo *curr;
     meminfo **prev;
     verify_on_stack(key);
@@ -57,9 +40,7 @@ int temp_alloc(size_t size, void **key)
         curr = curr->next;
     }
 
-#ifdef STATS
     ++total_allocs;
-#endif
 
     /* reuse the memory if we have it and its size is big enough. */
     if (curr && curr->size >= size) {
@@ -70,9 +51,7 @@ int temp_alloc(size_t size, void **key)
            growing the cache infinitely */
         if (curr->size < size * 2) {
             *key = ptr_from_meminfo(curr);
-#ifdef STATS
             ++allocs_from_cache;
-#endif
             return 1;
         }
     }
@@ -98,10 +77,14 @@ int temp_alloc(size_t size, void **key)
     return 1;
 }
 
+int temp_alloc(size_t size, void **key)
+{
+    return temp_alloc_helper(size, key, 0);
+}
+
 int temp_realloc(size_t size, void **key)
 {
-    /* in this implementation it's exactly the same as temp_alloc() */
-    return temp_alloc(size, key);
+    return temp_alloc_helper(size, key, 1);
 }
 
 /* Free all temporary allocations that are no longer needed */
@@ -128,38 +111,3 @@ void temp_freeall_helper(char *currstacktop)
         }
     }
 }
-
-int temp_memdup(void *mem, size_t size, void **key)
-{
-    int ok = temp_alloc(size, key);
-    if (!ok)
-        return 0;
-    memcpy(*key, mem, size);
-    return 1;
-}
-
-int temp_strdup(const char *txt, char **key)
-{
-    if (!txt) {
-        *key = 0;
-        return 1;
-    }
-
-    return temp_memdup((void*)txt, strlen(txt)+1, (void**)key);
-}
-
-/* Return total amount of allocated memory. For diagnostics mostly */
-size_t temp_total_alloced()
-{
-    return total_alloced;
-}
-
-#ifdef STATS
-void temp_alloc_dump_stats()
-{
-    printf("Total alllocs:     %d\n", total_allocs);
-    printf("Allocs from cache: %d\n", allocs_from_cache);
-}
-#else
-void temp_alloc_dump_stats() {}
-#endif

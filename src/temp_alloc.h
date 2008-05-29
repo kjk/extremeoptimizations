@@ -2,6 +2,11 @@
 #ifndef TEMP_ALLOC_H__
 #define TEMP_ALLOC_H__
 
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+
 /* core APIs */
 int temp_alloc(size_t size, void **key);
 int temp_realloc(size_t size, void **key);
@@ -12,12 +17,6 @@ void temp_freeall_helper(char *currstacktop);
     temp_freeall_helper(&dummy); \
    }
 
-/* utility functions built on top of core APIs */
-int temp_memdup(void *mem, size_t size, void **key);
-int temp_strdup(const char *txt, char **key);
-
-/* diagnostics */
-size_t temp_total_alloced();
-void temp_alloc_dump_stats();
+#include "temp_alloc_helpers.h"
 
 #endif

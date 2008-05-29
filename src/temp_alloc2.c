@@ -6,17 +6,6 @@
 
 #include "temp_alloc.h"
 
-#define STATS
-
-#ifdef NDEBUG
-static void verify_on_stack(void *addr)
-{
-    /* TODO: assert()/crash if addr is not on stack */
-}
-#else
-#define verify_on_stack(addr)
-#endif
-
 #define ENTRIES_START_COUNT 128
 
 typedef char * key_type; /* for readability */
@@ -31,14 +20,11 @@ static key_type *keys_start = NULL;
 static key_type *keys_end = NULL;
 static meminfo *allocs_info = NULL;
 
-int keys_alloced = 0;
+static int keys_alloced = 0;
 
 size_t total_alloced = 0;
-
-#ifdef STATS
 int total_allocs = 0;
 int allocs_from_cache = 0;
-#endif
 
 /* Allocate temporary space of a given <size> and put in under <key>.
    Returns 0 if failed to allocate, 1 otherwise.
@@ -48,7 +34,7 @@ int allocs_from_cache = 0;
    numbers of unique keys) if we did insert new values in sorted order and
    did a binary search instead of linear. Since we never remove keys, number
    of insertions would be very small. */
-int temp_alloc_helper(size_t size, void **key, int copyold)
+static int temp_alloc_helper(size_t size, void **key, int copyold)
 {
     int idx;
     meminfo *mi;
@@ -95,9 +81,7 @@ int temp_alloc_helper(size_t size, void **key, int copyold)
     if (mi->mem && mi->size > size && mi->size < 2 * size) {
         /* reuse the memory */
         *key = mi->mem;
-#ifdef STATS
         ++allocs_from_cache;
-#endif
         return 1;
     }
 
@@ -112,9 +96,7 @@ int temp_alloc_helper(size_t size, void **key, int copyold)
     if (mi->mem) {
         assert(total_alloced >= mi->size);
         total_alloced += size;
-#ifdef STATS
         ++total_allocs;
-#endif
 
         if (old_mem) {
             if (copyold) {
@@ -160,37 +142,3 @@ void temp_freeall_helper(char *currstacktop)
         ++mi_curr;
     }
 }
-
-int temp_memdup(void *mem, size_t size, void **key)
-{
-    int ok = temp_alloc(size, key);
-    if (!ok)
-        return 0;
-    memcpy(*key, mem, size);
-    return 1;
-}
-
-size_t temp_total_alloced()
-{
-    return total_alloced;
-}
-
-int temp_strdup(const char *txt, char **key)
-{
-    if (!txt) {
-        *key = 0;
-        return 1;
-    }
-
-    return temp_memdup((void*)txt, strlen(txt)+1, (void**)key);
-}
-
-#ifdef STATS
-void temp_alloc_dump_stats()
-{
-    printf("Total alllocs:     %d\n", total_allocs);
-    printf("Allocs from cache: %d\n", allocs_from_cache);
-}
-#else
-void temp_alloc_dump_stats() {}
-#endif

@@ -3,13 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef TEMP_ALLOC1
 #include "temp_alloc.h"
-#endif
-
-#ifdef TEMP_ALLOC2
-#include "temp_alloc2.h"
-#endif
 
 static void foo()
 {
