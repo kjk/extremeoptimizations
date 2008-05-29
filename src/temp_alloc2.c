@@ -48,10 +48,13 @@ int allocs_from_cache = 0;
    numbers of unique keys) if we did insert new values in sorted order and
    did a binary search instead of linear. Since we never remove keys, number
    of insertions would be very small. */
-int temp_alloc(size_t size, void **key)
+int temp_alloc_helper(size_t size, void **key, int copyold)
 {
     int idx;
     meminfo *mi;
+    void *old_mem;
+    size_t old_size;
+    size_t to_copy;
     key_t k = (key_t)key;
     key_t *curr = keys_start;
 
@@ -97,27 +100,45 @@ int temp_alloc(size_t size, void **key)
 #endif
         return 1;
     }
-    if (mi->mem) {
-        free(mi->mem);
-        assert(total_alloced >= mi->size);
-        total_alloced -= mi->size;
-    }
+
+    old_size = 0;
+    old_mem = mi->mem;
+    if (old_mem)
+        old_size = mi->size;
+
     mi->mem = malloc(size);
     *key = mi->mem;
     mi->size = size;
     if (mi->mem) {
+        assert(total_alloced >= mi->size);
         total_alloced += size;
 #ifdef STATS
         ++total_allocs;
 #endif
+
+        if (old_mem) {
+            if (copyold) {
+                to_copy = old_size;
+                if (to_copy > size)
+                    to_copy = size;
+                memcpy(mi->mem, old_mem, to_copy);
+            }
+            free(old_mem);
+        }
+
         return 1;
     }
     return 0;
 }
 
+int temp_alloc(size_t size, void **key)
+{
+    return temp_alloc_helper(size, key, 0);
+}
+
 int temp_realloc(size_t size, void **key)
 {
-    return temp_alloc(size, key);
+    return temp_alloc_helper(size, key, 1);
 }
 
 /* Free all temporary allocations that are no longer needed */
