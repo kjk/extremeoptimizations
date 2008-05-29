@@ -65,6 +65,7 @@ O=$(OUTDIR)
 ifeq ($(NO_STRIP),yes)
 all: $(O)/temp_alloc_test \
 	$(O)/temp_alloc2_test \
+	$(O)/temp_alloc3_test \
 	$(O)/parsed_str_dummy $(O)/parsed_str_stl \
 	$(O)/parsed_str_unopt $(O)/parsed_str_opt_alloc \
 	$(O)/parsed_str_opt_one_array $(O)/parsed_str_opt_offsets \
@@ -73,6 +74,7 @@ all: $(O)/temp_alloc_test \
 else
 all: $(O)/temp_alloc_test_stripped \
 	$(O)/temp_alloc2_test_stripped \
+	$(O)/temp_alloc3_test_stripped \
 	$(O)/parsed_str_dummy_stripped $(O)/parsed_str_stl_stripped \
 	$(O)/parsed_str_unopt_stripped $(O)/parsed_str_opt_alloc_stripped \
 	$(O)/parsed_str_opt_one_array_stripped $(O)/parsed_str_opt_offsets_stripped \
@@ -90,7 +92,7 @@ $(OUTDIR_EXISTS):
 	touch $(OUTDIR_EXISTS)
 
 $(OUTDIR)/temp_alloc_test: $(OUTDIR_EXISTS) force
-	cc $(CFLAGS) temp_alloc_test.c temp_alloc.c temp_alloc_helpers.c -DTEMP_ALLOC1 $(LDFLAGS) -o $@
+	cc $(CFLAGS) temp_alloc_test.c temp_alloc.c temp_alloc_helpers.c $(LDFLAGS) -o $@
 
 $(OUTDIR)/temp_alloc_test_stripped: $(OUTDIR)/temp_alloc_test
 	strip -S -o $@ $<
@@ -99,6 +101,12 @@ $(OUTDIR)/temp_alloc2_test: $(OUTDIR_EXISTS) force
 	cc $(CFLAGS) temp_alloc_test.c temp_alloc2.c temp_alloc_helpers.c -DTEMP_ALLOC2 $(LDFLAGS) -o $@
 
 $(OUTDIR)/temp_alloc2_test_stripped: $(OUTDIR)/temp_alloc2_test
+	strip -S -o $@ $<
+
+$(OUTDIR)/temp_alloc3_test: $(OUTDIR_EXISTS) force
+	cc $(CFLAGS) temp_alloc_test.c temp_alloc3.c temp_alloc_helpers.c $(LDFLAGS) -o $@
+
+$(OUTDIR)/temp_alloc3_test_stripped: $(OUTDIR)/temp_alloc3_test
 	strip -S -o $@ $<
 
 $(OUTDIR)/parsed_str_dummy: $(OUTDIR_EXISTS) force

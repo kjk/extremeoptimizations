@@ -6,7 +6,7 @@
 
 #include "temp_alloc.h"
 
-#define ENTRIES_COUNT 128
+#define ENTRIES_START_COUNT 128
 
 typedef char * key_type; /* for readability */
 typedef struct meminfo {
@@ -16,10 +16,11 @@ typedef struct meminfo {
 
 /* Store keys and rest of the info in separate arrays for cache efficiency.
    We traverse keys often, so we want the array to be as small as possible */
-static key_type keys[ENTRIES_COUNT] = {0};
-static meminfo allocs_info[ENTRIES_COUNT] = {0};
+static key_type *keys_start = NULL;
+static key_type *keys_end = NULL;
+static meminfo *allocs_info = NULL;
 
-static int keys_count = 0;
+static int keys_alloced = 0;
 
 size_t total_alloced = 0;
 int total_allocs = 0;
@@ -28,7 +29,7 @@ int allocs_from_cache = 0;
 /* Allocate temporary space of a given <size> and put in under <key>.
    Returns 0 if failed to allocate, 1 otherwise.
    Assumptions: number of unique allocation points (i.e. unique values of
-   <key>) is relatively small so linear search is ok. 
+   <key>) is relatively small so linear search is ok.
    Note: the speed could have been probably improved (especially for large
    numbers of unique keys) if we did insert new values in sorted order and
    did a binary search instead of linear. Since we never remove keys, number
@@ -41,8 +42,7 @@ static int temp_alloc_helper(size_t size, void **key, int copyold)
     size_t old_size;
     size_t to_copy;
     key_type k = (key_type)key;
-    key_type *curr = &keys[0];
-    key_type *keys_end = curr + keys_count;
+    key_type *curr = keys_start;
 
     verify_on_stack(key);
 
@@ -53,24 +53,32 @@ static int temp_alloc_helper(size_t size, void **key, int copyold)
         ++curr;
     }
 
-    idx = curr - keys;
-    if (idx >= keys_count) {
+    idx = curr - keys_start;
+    if (curr >= keys_end) {
         /* didn't find */
-        if (keys_count >= ENTRIES_COUNT) {
-            /* not enough space in array. need to recompile with bigger limit */
-            assert(0);
-            *key = malloc(size); /* memory leak */
-            return *key != 0;
+        int keys_count = keys_end - keys_start;
+        if (keys_alloced  <= keys_count) {
+            /* neds to grow arrays for keys and meminfo */
+            int new_keys_alloced = keys_alloced * 2;
+            if (0 == new_keys_alloced)
+                new_keys_alloced = ENTRIES_START_COUNT;
+            /* optimisticallya assume that allocations won't fail */
+            keys_alloced = new_keys_alloced;
+            keys_start = (key_type*)realloc(keys_start, new_keys_alloced * sizeof(key_type));
+            allocs_info = (meminfo*)realloc(allocs_info, new_keys_alloced * sizeof(meminfo));
+            keys_end = keys_start + keys_alloced;
+            curr = &keys_start[keys_count];
         }
         /* insert at the end */
         *curr = k;
+        idx = curr - keys_start;
         allocs_info[idx].mem = 0;
-        ++keys_count;
+        ++keys_end;
     }
 
     assert(*curr = k);
     mi = &allocs_info[idx];
-    if (mi->mem && mi->size > size && (mi->size < 2 * size || copyold)) {
+    if (mi->mem && mi->size > size && mi->size < 2 * size) {
         /* reuse the memory */
         *key = mi->mem;
         ++allocs_from_cache;
@@ -118,8 +126,7 @@ int temp_realloc(size_t size, void **key)
 /* Free all temporary allocations that are no longer needed */
 void temp_freeall_helper(char *currstacktop)
 {
-    key_type *curr = &keys[0];
-    key_type *keys_end = &keys[keys_count];
+    key_type *curr = keys_start;
     meminfo *mi_curr = allocs_info;
 
     /* linear search in arrays of keys */
