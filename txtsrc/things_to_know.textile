@@ -1,7 +1,59 @@
 Title: Things to know.
 
-To cover:
+h1. Basic things you need to know.
 
-* size of basic types
-* how compiler lays out C structures (structure alignment)
-* malloc overhead: padding of allocations + at least 8 byte overhead per allocation for maintaining malloc data structures. Lots of small allocations => bad
+When optimizing for size, you need to know what the sizes are and what other factors increase or decrease size.
+
+h2. Sizes of basic C types
+
+C has few fundamental types and it's important to know how much memory they use:
+
+* char - 1 byte
+* short - 2 bytes
+* int - 4 bytes on 32-bit machines, 4 or 8 on 64-bit
+* long - like int
+* pointer - 4 bytes on 32-bit machines, 8 bytes on 64-bit machines
+* wchar_t - 2 bytes on Windows, 4 bytes on posix (unix)
+
+C standard unfortunately doesn't dictate the size for int and long types and it might depend on the compiler you're using or target for which you're compiling (i.e. 32 bit vs. 64 bit, ARM vs. Intel).
+
+If you want to operate on exact sizes, define specific types like @i16@, @i32@, @i64@ etc. and use preprocessor tricks to typedef them to the right type in your compiler.
+
+The exact name doesn't matter - I like short ones but you'll find @int_16_t@. A practical concern is being able to use other peoples code (or make your code re-usable by others) so a good policy is to only use those typedefs internally but do not expose them in public interfaces.
+
+h2. Layout of structures
+
+What's the size of this structure:
+
+<code class="cpp"><pre>
+struct foo {
+    char c1;
+    int i1;
+};
+</pre></code>
+
+Naive math would give you 5 bytes: 1 byte for char and 4 bytes for i1. But it's 8.
+
+C laids out fields in the structures using natural alignment i.e. since int is 4 bytes in size, its position in the structure will be aligned at 4 byte boundary.
+
+C is a very low-level language and it lays out variables in the exact order you specified, even if it's not optimal. It's therefore up to you to order them in the most efficient order. In this case it would be:
+
+The rule of thumb here is to put largest fields first, smallest last.
+
+<code class="cpp"><pre>
+struct foo {
+    int i1;
+    char c1;
+};
+</pre></code>
+
+h2. Malloc overhead.
+
+How many bytes do you steal from OS when you call @malloc(1)@? Again, naive math would indicate 1.
+
+Allocation process, however, is not magic. Allocator has to track allocations, which takes memory. The exact number for per-allocation overhead depends on the allocator, but you can expect this to be at least 8 bytes (which, when you think about it, is only 2 pointers).
+
+Another overhead comes from allocation rounding. The specifics again depend on the allocator - on Windows allocations are rounded by 16 bytes.
+
+The bottom line is: avoid lots of small allocations. 8 byte overhead for 256 byte allocation isn't much, 22 byte overhead for 2 byte allocation is a lot.
+
