@@ -1,13 +1,22 @@
+/* Public domain code. Take all the code you want, we'll just write more. */
 #ifndef TEMP_ALLOC_H__
 #define TEMP_ALLOC_H__
 
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+
+/* core APIs */
 int temp_alloc(size_t size, void **key);
-void temp_freeall();
-
 int temp_realloc(size_t size, void **key);
-size_t temp_total_alloced();
+void temp_freeall_helper(char *currstacktop);
 
-int temp_memdup(void *mem, size_t size, void **key);
-int temp_strdup(const char *txt, char **key);
+#define temp_freeall() { \
+    char dummy; \
+    temp_freeall_helper(&dummy); \
+   }
+
+#include "temp_alloc_helpers.h"
 
 #endif

@@ -1,6 +1,8 @@
+/* Public domain code. Take all the code you want, we'll just write more. */
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "temp_alloc.h"
 
 static void foo()
@@ -17,7 +19,7 @@ static void foo()
     assert(temp_total_alloced() == 200);
 
     /* should return the same address */
-    temp_alloc(100, &m1);
+    temp_alloc(150, &m1);
     assert(tmp == m1);
     temp_freeall();
     assert(temp_total_alloced() == 200);
@@ -32,17 +34,13 @@ static void foo()
     assert(0 == strcmp("foo", s));
 }
 
-static void bar()
-{
-    foo();
-}
-
 int main(int argc, char **argv)
 {
     temp_freeall();
-    bar();
+    foo();
     temp_freeall();
     size_t alloced = temp_total_alloced();
     printf("Still alloced for temp values: %d\n", (int)alloced);
+    temp_alloc_dump_stats();
     return 0;
 }
