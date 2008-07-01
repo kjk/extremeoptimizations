@@ -57,3 +57,51 @@ Another overhead comes from allocation rounding. The specifics again depend on t
 
 The bottom line is: avoid lots of small allocations. 8 byte overhead for 256 byte allocation isn't much, 22 byte overhead for 2 byte allocation is a lot.
 
+h2. Memory hierarchies.
+
+Modern processors are super fast. Memory access, on the other hand, is slow. Accessing data on a hard-drive is in its own class of slowness.
+
+To alleviate the slowness of memory access, modern processors employ level 1 (L1) and level 2 (L2) caches. L1 and L2 memory is much faster than main RAM but they're also much more expensive, so you can only afford very little L1 and L2 caches.
+
+The important thing to know is relative cost of memory accesses compared to the cost of an instruction. Here's the breakdown for modern CPU (http://www.nwcpp.org/Downloads/2007/Machine_Architecture_-_NWCPP.pdf):
+
+<table>
+<tr>
+	<th>Store</th>
+	<th>Size</th>
+	<th>Access cost (clocks)</th>
+</tr>
+<tr>
+	<td>Registers</td>
+	<td>64B</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>L1 cache</td>
+	<td>32KB</td>
+	<td>3</td>
+</tr>
+<tr>
+	<td>L2 cache</td>
+	<td>4MB</td>
+	<td>14</td>
+</tr>
+<tr>
+	<td>DRAM</td>
+	<td>4GB</td>
+	<td>200</td>
+</tr>
+<tr>
+	<td>Disk</td>
+	<td>500GB</td>
+	<td>15M</td>
+</tr>
+</table>
+
+The exact numbers vary per CPU, but this is roughly correct.
+
+What this data says is that storing data on disk is a performance disaster: you can execute millions CPU instructions in the time taken to read the data. Of course you can't avoid using disk but you can win big by choosing compact representation of the data and even compressing/decompressing data when writing/reading data to/from a file.
+
+A corollary: you loose big when you choose a bad, verbose file format e.g. XML.
+
+What it also says is that even accessing data in RAM is slow - you can execute 200 instructions in the time taken to access a byte in RAM. This means that choosing more compact representation which requires more instructions to decode than a straightforward representation can (counterintuitively) speed up the program because cutting down the time spent accessing memory more than offsets additional CPU instructions needed to decode the data.
