@@ -28,6 +28,5 @@ h2. Table of contents
 # Smaller code through better architecture
 # Other misc ideas
 
-<hr>
 
 
