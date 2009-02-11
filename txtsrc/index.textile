@@ -30,7 +30,4 @@ h2. Table of contents
 
 <hr>
 
-<center>
-<iframe height="180" allowTransparency="true" frameborder="0" scrolling="no" style="border:none" src="http://kjk.wufoo.com/embed/keep-in-touch/" title="HTML Form"><a href="http://kjk.wufoo.com/forms/keep-in-touch/" title="Keep in touch">Fill out my Wufoo form!</a></iframe>
-</center>
 
