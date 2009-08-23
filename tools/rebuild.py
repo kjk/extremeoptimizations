@@ -2,11 +2,12 @@
 import os.path, sys, string, shutil
 import textile
 
-CURDIR = os.path.curdir
-TXTSRCDIR = os.path.realpath(os.path.join(CURDIR, "txtsrc"))
-SRCDIR = os.path.realpath(os.path.join(CURDIR, "src"))
-OUTDIR = os.path.realpath(os.path.join(CURDIR, "www"))
-OUTSRCDIR = os.path.realpath(os.path.join(CURDIR, "www", "src"))
+SCRIPT_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.realpath(os.path.join(SCRIPT_DIR, ".."))
+TXTSRCDIR = os.path.join(BASE_DIR, "txtsrc")
+SRCDIR = os.path.join(BASE_DIR, "src")
+OUTDIR = os.path.join(BASE_DIR, "www")
+OUTSRCDIR = os.path.join(BASE_DIR, "www", "src")
 
 def read(path):
     fo = open(path, "rb")
@@ -18,8 +19,6 @@ def write(path, data):
     fo = open(path, "wb")
     fo.write(data)
     fo.close()
-
-SCRIPTDIR = os.path.realpath(os.path.basename(sys.argv[0]))
 
 g_header = None
 def header():
