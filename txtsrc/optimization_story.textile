@@ -14,9 +14,9 @@ We'll be trying to minimize size of the code and the amount of memory used at ru
 
 @includesrc ParsedStrDummy.h 4 11
 
-Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("raw":src/ParsedStrTest.cpp.txt) and a "makefile":src/makefile.html ("raw":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version and ensure all versions work the same way.
+Before we proceed, we need a way to know if our code is working. All versions of the code provide identical interface to the caller, so we'll write a unit test driver "ParsedStrTest.cpp":src/ParsedStrTest.cpp.html ("txt":src/ParsedStrTest.cpp.txt) and a "makefile":src/makefile.html ("txt":src/makefile.txt) which will compile all versions as separate programs in debug, release and size-optimize configurations. That way we'll be able to compare the code size for each version and ensure all versions work the same way.
 
-Common utility routines are in "ParsedStrUtil.cpp":src/ParsedStrUtil.cpp.html ("raw":src/ParsedStrUtil.cpp.txt).
+Common utility routines are in "ParsedStrUtil.cpp":src/ParsedStrUtil.cpp.html ("txt":src/ParsedStrUtil.cpp.txt).
 
 h2. Naive STL version
 

@@ -26,7 +26,5 @@ h2. Table of contents
 # Passing by value vs. passing by reference
 # Allocating without freeing
 # Smaller code through better architecture
+# "Case study: optimizing disassembler in v8":optimizing_v8.html
 # Other misc ideas
-
-
-
