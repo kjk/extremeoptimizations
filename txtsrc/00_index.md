@@ -8,20 +8,20 @@ by [Krzysztof Kowalczyk](http://blog.kowalczyk.info)
 
 SumatraPDF, a project I started, is often praised for its small size and
 performance. It implements a lot of functionality at a fraction of size
-of competing software.
+of similar software.
 
 This is not an accident.
 
-This book will show you the techniques I use to keep Sumatra small despite
-having lots of features.
+This book will show you the techniques I use to keep SumatraPDF small despite
+implementing lots of features.
 
-You'll learn extreme techniques for optimizing the size and memory usage of C,
-C++ and Objective-C programs.
+You'll learn extreme techniques for optimizing the binary size and memory
+usage of C, C++ and Objective-C programs.
 
-Sometimes the code will also become faster but speed is not the
-main focus. Improving performance is a extensively covered topic.
+Sometimes the code will also become faster but speed is not the main focus of
+this book.
 
-All examples from optimizing real-life code.
+All examples come from optimizing real, production code.
 
 ## Table of contents
 
@@ -37,4 +37,3 @@ All examples from optimizing real-life code.
 10. Smaller code through better architecture
 11. [Case study: optimizing disassembler in v8](optimizing_v8.html)
 12. Other misc ideas
-
