@@ -1,25 +1,29 @@
-Title: Extreme (size) optimization in C, C*+ and Objective-C.
-\
-h1. Extreme optimization in C, C*+ and Objective-C.
+Title: Extreme (size) optimization in C, C++ and Objective-C.
+
+# Secrets of code optimization gurus
 
 by [Krzysztof Kowalczyk](http://blog.kowalczyk.info)
 
-What is this about?
--------------------
+## What is this about?
 
-This document presents extreme techniques for optimizing the size of C,
-C++ and Objective-C programs. It’s about optimizing both the size of the
-final executable and the amount of memory used at runtime.
+SumatraPDF, a project I started, is often praised for its small size and
+performance. It implements a lot of functionality at a fraction of size
+of competing software.
 
-![](>http://farm1.static.flickr.com/206/512024537_3da49317eb_m.jpg):http://www.flickr.com/photos/strict/512024537/
+This is not an accident.
 
-Sometimes the code will also become faster, although speed is not the
-main focus.
+This book will show you the techniques I use to keep Sumatra small despite
+having lots of features.
 
-All examples come from optimizing real-life code.
+You'll learn extreme techniques for optimizing the size and memory usage of C,
+C++ and Objective-C programs.
 
-Table of contents
------------------
+Sometimes the code will also become faster but speed is not the
+main focus. Improving performance is a extensively covered topic.
+
+All examples from optimizing real-life code.
+
+## Table of contents
 
 1.  Why optimize?
 2.  [An optimization story](optimization_story.html)
